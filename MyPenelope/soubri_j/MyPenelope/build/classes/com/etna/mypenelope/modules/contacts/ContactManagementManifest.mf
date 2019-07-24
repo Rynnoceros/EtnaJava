@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Module-Class: com.etna.mypenelope.modules.contacts.ContactManagement
-X-COMMENT: Main-Class will be added automatically by build
-
