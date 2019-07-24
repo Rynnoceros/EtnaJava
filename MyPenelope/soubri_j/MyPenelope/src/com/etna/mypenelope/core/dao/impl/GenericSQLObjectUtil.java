@@ -1,0 +1,123 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.core.dao.impl;
+
+import com.etna.mypenelope.core.GenericObjectUtil;
+import com.etna.mypenelope.core.LogManager;
+import java.lang.reflect.Field;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Date;
+
+/**
+ * 
+ * @author soubri_j/martin_m
+ */
+public class GenericSQLObjectUtil<T> extends GenericObjectUtil<T> {
+    
+    public GenericSQLObjectUtil(Class<T> theClass) {
+        super(theClass);
+    }
+    
+    /**
+     * Method used to fill a field
+     * @param instance Instance of the object to fill 
+     * @param fieldName The field name to fill
+     * @param set The resultset containing the value to put in the field
+     */
+    public void fillField(T instance, String fieldName, ResultSet set) {
+    	Field field = null;
+    	Class<?> fieldClass = null;
+    	
+        try {
+            if (set != null)
+            {
+                field = theClass.getDeclaredField(fieldName);
+                if (field != null) {
+                    field.setAccessible(true);
+                    fieldClass = field.getType();					
+                    if (fieldClass == Boolean.class) {
+                        field.set(instance, set.getBoolean(fieldName));
+                    } else if (fieldClass == Byte.class) {
+                        field.set(instance, set.getByte(fieldName));
+                    } else if (fieldClass == Character.class) {						
+                        field.set(instance, (char)set.getByte(fieldName));
+                    } else if (fieldClass == Short.class) {
+                        field.set(instance, set.getShort(fieldName));
+                    } else if (fieldClass == Integer.class) {
+                        field.set(instance, set.getInt(fieldName));
+                    } else if (fieldClass == Long.class) {
+                        field.set(instance, set.getLong(fieldName));
+                    } else if (fieldClass == Float.class) {
+                        field.set(instance, set.getFloat(fieldName));
+                    } else if (fieldClass == Double.class) {
+                        field.set(instance, set.getDouble(fieldName));
+                    } else if (fieldClass == Date.class) {
+                        field.set(instance, set.getDate(fieldName));
+                    } else {
+                        field.set(instance, set.getObject(fieldName));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LogManager.getInstance().log(e.getLocalizedMessage());
+        }
+    }
+    
+    public void fillPreparedStatement(PreparedStatement ps, String criteria, Object value, int parameterIndex)
+    {
+        if (ps != null) {
+            try {
+                Field field = theClass.getDeclaredField(criteria);
+                Class<?> fieldClass = null;
+                
+                if (field != null) {
+                    field.setAccessible(true);
+                    fieldClass = field.getType();					
+                    if (fieldClass == Boolean.class) {
+                        ps.setBoolean(parameterIndex, (Boolean)value);
+                    } else if (fieldClass == Byte.class) {
+                        ps.setByte(parameterIndex, (Byte)value);
+                    } else if (fieldClass == Character.class) {						
+                        ps.setByte(parameterIndex, (Byte)value);
+                    } else if (fieldClass == Short.class) {
+                        ps.setShort(parameterIndex, (Short)value);
+                    } else if (fieldClass == Integer.class) {
+                        ps.setInt(parameterIndex, (Integer)value);
+                    } else if (fieldClass == Long.class) {
+                        ps.setLong(parameterIndex, (Long)value);
+                    } else if (fieldClass == Float.class) {
+                        ps.setFloat(parameterIndex, (Float)value);
+                    } else if (fieldClass == Double.class) {
+                        ps.setDouble(parameterIndex, (Double)value);
+                    } else if (fieldClass == Date.class) {
+                        ps.setDate(parameterIndex, (Date)value);
+                    } /*else if (fieldClass.isArray() && (fieldClass.getComponentType() == byte.class)) {
+                        ps.setBytes(parameterIndex, (byte[])value);
+                    }*/ else {
+                        ps.setObject(parameterIndex, value);
+                    }
+                }
+            } catch (Exception ex) {              
+                LogManager.getInstance().log(ex.getLocalizedMessage());
+            }
+        }
+    }
+    
+    public void fillPreparedStatement(PreparedStatement ps, T instance) {
+        if (ps != null) {
+            try {
+                Field[] fields = theClass.getDeclaredFields();
+                for (int i = 0; i < fields.length; ++i) {
+                    fields[i].setAccessible(true);
+                    fillPreparedStatement(ps, fields[i].getName(), fields[i].get(instance), i+1);
+                }    
+            } catch (Exception ex) {
+                LogManager.getInstance().log(ex.getLocalizedMessage());
+            }
+        }
+    }
+}

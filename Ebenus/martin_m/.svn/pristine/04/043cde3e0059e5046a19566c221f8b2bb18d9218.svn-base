@@ -1,0 +1,290 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.entities;
+
+import com.cours.ebenus.dao.annotations.FetchChild;
+import com.cours.ebenus.dao.annotations.FieldName;
+import com.cours.ebenus.dao.annotations.PrimaryKey;
+
+/**
+ * Adresse entity.
+ * @author soubri_j/martin_m
+ */
+public class Adresse {
+    @PrimaryKey
+    private Integer idAdresse;
+    @FetchChild(entity = Utilisateur.class, foreignKey = "idUtilisateur")
+    private Integer idUtilisateur;
+    @FieldName (name = "rue")
+    private String rue;
+    @FieldName (name = "codePostal")
+    private String codePostal;
+    @FieldName (name = "ville")
+    private String ville;
+    @FieldName (name = "pays")
+    private String pays;
+    @FieldName (name = "statut")
+    private String statut = "P";
+    @FieldName (name = "typeAdresse")
+    private String typeAdresse = "L";
+    @FieldName (name = "principale")
+    private Boolean principale = false;
+    @FieldName (name = "versionAdresse")
+    private Integer version = 1;
+
+    public Adresse(Integer idAdresse, Integer idUtilisateur, String rue, String codePostal, String ville, String pays,
+                   String statut, String typeAdresse, Boolean principale, Integer version) {
+        this.idAdresse = idAdresse;
+        this.idUtilisateur = idUtilisateur;
+        this.rue = rue;
+        this.codePostal = codePostal;
+        this.ville = ville;
+        this.pays = pays;
+        this.statut = statut;
+        this.typeAdresse = typeAdresse;
+        this.principale = principale;
+        this.version = version;
+    }
+    
+    public Adresse(String rue, String codePostal, String ville, String pays, String statut, String typeAdresse, 
+                    Boolean principale) {
+        this(null, null, rue, codePostal, ville, pays, statut, typeAdresse, principale, 1);
+    }
+    
+    public Adresse(String rue, String codePostal, String ville, String pays) {
+        this(rue, codePostal, ville, pays, StatutAdresse.Permanent.toString(), TypeAdresse.Livraison.toString(), false);
+    }
+    
+    /**
+     * idAdresse getter.
+     * @return idAdresse
+     */
+    public Integer getIdAdresse() {
+        return idAdresse;
+    }
+
+    /**
+     * idUtilisateur getter.
+     * @return idUtilisateur
+     */
+    public Integer getIdUtilisateur() {
+        return idUtilisateur;
+    }
+
+    /**
+     * rue getter.
+     * @return String containing rue value
+     */
+    public String getRue() {
+        return rue;
+    }
+
+    /**
+     * codePostal getter.
+     * @return String containing codePostal value
+     */
+    public String getCodePostal() {
+        return codePostal;
+    }
+
+    /**
+     * ville getter.
+     * @return String containing ville value
+     */
+    public String getVille() {
+        return ville;
+    }
+
+    /**
+     * pays getter.
+     * @return String containing pays value
+     */
+    public String getPays() {
+        return pays;
+    }
+
+    /**
+     * statut getter.
+     * @return String containing statut
+     */
+    public String getStatut() {
+        return statut;
+    }
+
+    /**
+     * typeAdresse getter.
+     * @return String containing typeAdresse value
+     */
+    public String getTypeAdresse() {
+        return typeAdresse;
+    }
+
+    /**
+     * principale getter.
+     * @return Boolean containing principale value
+     */
+    public Boolean getPrincipale() {
+        return principale;
+    }
+
+    /**
+     * version getter.
+     * @return version
+     */
+    public Integer getVersion() {
+        return version;
+    }
+
+    /**
+     * idUtilisateur setter.
+     * @param idUtilisateur New idUtilisateur value
+     */
+    public void setIdUtilisateur(Integer idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
+    }
+
+    /**
+     * rue setter.
+     * @param rue New rue value
+     */
+    public void setRue(String rue) {
+        this.rue = rue;
+    }
+
+    /**
+     * codePostal setter.
+     * @param codePostal New codePostal value
+     */
+    public void setCodePostal(String codePostal) {
+        this.codePostal = codePostal;
+    }
+
+    /**
+     * ville setter.
+     * @param ville New ville value
+     */
+    public void setVille(String ville) {
+        this.ville = ville;
+    }
+
+    /**
+     * pays setter.
+     * @param pays New pays value
+     */
+    public void setPays(String pays) {
+        this.pays = pays;
+    }
+
+    /**
+     * statut setter.
+     * @param statut New statut value
+     */
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
+    /**
+     * typeAdresse setter.
+     * @param typeAdresse New typeAdresse value
+     */
+    public void setTypeAdresse(String typeAdresse) {
+        this.typeAdresse = typeAdresse;
+    }
+
+    /**
+     * principale setter.
+     * @param principale New principale value
+     */
+    public void setPrincipale(Boolean principale) {
+        this.principale = principale;
+    }
+
+    /**
+     * version setter.
+     * @param version New version value
+     */
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+    
+    /**
+     * toString override.
+     * @return String containing object description
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.rue).append("\n");
+        sb.append(this.codePostal).append(" ").append(this.ville).append("\n");
+        sb.append(this.pays).append("\n");
+        return sb.toString();
+    }
+    
+    /**
+     * hashCode override.
+     * @return hashCode of the object.
+     */
+    @Override
+    public int hashCode() {
+        return this.idAdresse.hashCode() + this.idUtilisateur.hashCode() +
+               this.version.hashCode() + this.codePostal.hashCode() +
+               this.pays.hashCode() + this.principale.hashCode() +
+               this.rue.hashCode() + this.statut.hashCode() +
+               this.typeAdresse.hashCode() + this.ville.hashCode();
+    }
+    
+    /**
+     * equals override. Test equality between 2 objects. Equality is based on id
+     * @param obj The object to compare
+     * @return true if the object is equal, false otherwise
+     */
+    @Override 
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Adresse)) {
+            return false;
+        }
+        Adresse add = (Adresse)obj;
+        if ((this.idAdresse == null && add.getIdAdresse() != null) ||
+            (this.idAdresse != null && !this.idAdresse.equals(add.idUtilisateur))) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * typeAdresse enumeration
+     */
+    public enum TypeAdresse {
+        Facturation("F"),
+        Livraison("L");
+        
+        private final String value;
+        TypeAdresse(final String s) {
+            value = s;
+        }
+        
+        public String toString() {
+            return value;
+        }
+    }
+    
+    /**
+     * Statut adresse enumeration
+     */
+    public enum StatutAdresse {
+        Permanent("P"),
+        Historise("H");
+        
+        private final String value;
+        StatutAdresse(final String s) {
+            value = s;
+        }
+        
+        public String toString() {
+            return value;
+        }
+    }
+}

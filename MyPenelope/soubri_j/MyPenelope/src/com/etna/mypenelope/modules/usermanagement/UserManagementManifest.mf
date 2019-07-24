@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Module-Class: com.etna.mypenelope.modules.usermanagement.UserManagement
+X-COMMENT: Main-Class will be added automatically by build
+

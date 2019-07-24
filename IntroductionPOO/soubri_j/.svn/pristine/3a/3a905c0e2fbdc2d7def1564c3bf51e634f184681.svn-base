@@ -1,0 +1,97 @@
+package com.cours.main;
+
+import java.util.List;
+
+import com.cours.dao.impl.csv.CsvPersonneDaoImpl;
+import com.cours.dao.impl.json.JsonPersonneDaoImpl;
+import com.cours.dao.impl.xml.XmlPersonneDaoImpl;
+import com.cours.entities.Personne;
+
+public class MainDao {
+
+    public static void main(String[] args) {
+    	CsvPersonneDaoImpl csv = new CsvPersonneDaoImpl();
+    	List<Personne> personnes = csv.findAll();
+    	/*for (Personne personne : personnes) {
+    		System.out.println(personne);
+    	}
+    	
+    	int id = 3;
+    	Personne toFind = csv.findById(id);
+    	if (toFind != null) {
+    		System.out.println(String.format("Personne id %s found", id));
+    		System.out.println(toFind);
+    	}
+    	
+    	personnes = csv.findByCriteria("prenom", "Martin");
+    	if (personnes != null && !personnes.isEmpty()) {
+    		System.out.println("Personne prenom = Martin found");
+    		for (Personne personne : personnes) {
+        		System.out.println(personne);
+        	}
+    	}
+    	
+    	Personne newPerson = new Personne();
+    	newPerson.setId(0);
+    	newPerson.setPrenom("Jordan");
+    	newPerson.setNom("SOUBRIER");
+    	newPerson.setPoids(83.00);
+    	newPerson.setTaille(185.00);
+    	newPerson.setRue("Rue de l'arbre");
+    	newPerson.setVille("Ceyrat");
+    	newPerson.setCodePostal("63122");
+    	Personne created = csv.create(newPerson);
+    	if (created != null) {
+    		System.out.println(String.format("Personne created id : %d", created.getId()));
+    	}
+    	
+    	if (csv.delete(toFind)) {
+    		System.out.println(String.format("Personne %d deleted", toFind.getId()));
+    	}
+    	
+    	JsonPersonneDaoImpl json = new JsonPersonneDaoImpl();
+    	personnes = json.findAll();
+    	for (Personne personne : personnes) {
+    		System.out.println(personne);
+    	}
+    	
+    	personnes = json.findByCriteria("prenom", "Martin");
+    	if (personnes != null && !personnes.isEmpty()) {
+    		System.out.println("Personne prenom = Martin found");
+    		for (Personne personne : personnes) {
+        		System.out.println(personne);
+        	}
+    	}
+    	
+    	created = json.create(newPerson);
+    	if (created != null) {
+    		System.out.println(String.format("Personne created id : %d", created.getId()));
+    	}
+    	
+    	toFind = json.findById(4);
+    	
+    	if (json.delete(toFind)) {
+    		System.out.println(String.format("Personne %d deleted", toFind.getId()));
+    	}*/
+    	
+    	XmlPersonneDaoImpl xml = new XmlPersonneDaoImpl();
+    	personnes = xml.findAll();
+    	for (Personne personne : personnes) {
+    		System.out.println(personne);
+    	}
+    	
+    	Personne newPerson = new Personne();
+    	newPerson.setId(0);
+    	newPerson.setPrenom("Jordan");
+    	newPerson.setNom("SOUBRIER");
+    	newPerson.setPoids(83.00);
+    	newPerson.setTaille(185.00);
+    	newPerson.setRue("Rue de l'arbre");
+    	newPerson.setVille("Ceyrat");
+    	newPerson.setCodePostal("63122");
+    	Personne created = xml.create(newPerson);
+    	if (created != null) {
+    		System.out.println(String.format("Personne created id : %d", created.getId()));
+    	}
+    }
+}

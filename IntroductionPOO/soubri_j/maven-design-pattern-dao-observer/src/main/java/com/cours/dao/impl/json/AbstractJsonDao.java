@@ -1,0 +1,302 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.dao.impl.json;
+
+import com.cours.dao.IDao;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import com.cours.utils.CreateObjectUtil;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+/**
+ *
+ * @author ElHadji
+ * @param <T>
+ */
+public abstract class AbstractJsonDao<T> implements IDao<T> {
+
+    private String jsonPathFile = null;
+    private MySubjectObserver mySubject = null;
+    private CreateObjectUtil<T> objectGenerator = null;
+    protected List<T> allInstances = null;
+
+    public AbstractJsonDao(Class<T> myClass, MySubjectObserver subject, String jsonPathFile) {
+        this.objectGenerator = new CreateObjectUtil<T>(myClass);
+        this.mySubject = subject;
+        this.jsonPathFile = jsonPathFile;
+        findAll();
+    }
+
+    public AbstractJsonDao(Class<T> myClass, String jsonPathFile) {
+    	this.objectGenerator = new CreateObjectUtil<T>(myClass);
+        this.jsonPathFile = jsonPathFile;
+        findAll();
+    }
+
+    /**
+     * Method used to get a list of Personne from a file
+     */
+    @SuppressWarnings("unchecked")
+	@Override
+    public List<T> findAll() {
+    	FileReader fr = null;
+    	JSONParser jsonParser = null;
+    	JSONObject jsonObject = null;
+    	JSONArray jsonArray = null;
+    	T instance = null;
+    	Set<Object> objects = null;
+    	Iterator<Object> iterator = null;
+    	Constructor<T> constructor = null;
+    	
+    	try {
+    		fr = new FileReader(jsonPathFile);
+    		if (fr != null) {
+    			jsonParser = new JSONParser();
+    			if (jsonParser != null) {
+    				jsonObject = (JSONObject)jsonParser.parse(fr);
+    				if (jsonObject != null) {
+    					jsonArray = (JSONArray)jsonObject.get(objectGenerator.getClassName().toLowerCase() + "s");
+    					if (jsonArray != null) {
+    						allInstances = new ArrayList<T>();
+    						for (int i = 0; i < jsonArray.size(); ++i) {
+    							constructor = objectGenerator.getTheClass().getDeclaredConstructor();
+    							if (constructor != null) {    								
+    								instance = constructor.newInstance();
+    								if (instance != null) {    									
+    									jsonObject = (JSONObject)jsonArray.get(i);
+    									objects = jsonObject.keySet();
+    									iterator = objects.iterator();
+    									while (iterator.hasNext()) {
+    										Object obj = iterator.next();
+    										objectGenerator.fillField(instance, obj.toString(), jsonObject.get(obj).toString());
+    									}
+    									allInstances.add(instance);
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	} finally {
+    		try {    			
+    			if (fr != null) {
+    				fr.close();
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    	
+        return allInstances;
+    }
+
+    /**
+     * Method to find an element by its id
+     */
+    @Override
+    public T findById(int id) {
+    	T toFind = null;
+    	
+    	if (allInstances != null) {
+    		Optional<T> found = allInstances.stream()
+    										.filter(objectGenerator.filterId(id))
+    										.findFirst();
+    		if (found != null && found.isPresent()) {
+    			toFind = found.get();
+    		}
+    	}
+    	
+        return toFind;
+    }
+
+    /**
+     * Method used to get a list of element filtering on a criteria
+     */
+    @Override
+    public List<T> findByCriteria(String criteria, Object valueCriteria) {
+    	List<T> filteredList = null;
+    	
+    	if (allInstances != null) {
+    		filteredList = allInstances.stream()
+    								.filter(objectGenerator.filterByCriteria(criteria, valueCriteria))
+    								.collect(Collectors.toList());
+    	}
+        return filteredList;
+    }
+
+    /**
+     * Method used to create a new element
+     */
+    @Override
+    public T create(T t) {
+    	T toReturn = null;
+    	
+    	if (t != null && allInstances != null) {
+			allInstances.add(t);
+			writeListToJSONFile(allInstances);
+			toReturn = t;			
+    	}
+        return toReturn;
+    }
+
+    @Override
+    public boolean delete(T t) {
+    	Field field = null;
+    	boolean deleted = false;
+    	
+    	if (allInstances != null && t != null) {
+    		try {
+    			field = objectGenerator.getTheClass().getDeclaredField(Constants.ID);
+    			if (field != null) {    			
+    				field.setAccessible(true);
+    				int id = (Integer)field.get(t);
+    				deleted = allInstances.removeIf(objectGenerator.filterId(id));
+    				if (deleted) {
+    					writeListToJSONFile(allInstances);
+    				}
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    	
+        return deleted;
+    }
+    
+    /**
+     * Method used to generate a JSONObject from an element
+     * @param t The element to convert
+     * @return a JSONObject if ok, null otherwise
+     */
+    @SuppressWarnings("unchecked")
+	private JSONObject generateJSONObject(T t) {
+    	JSONObject jsonObject = null;
+    	Field fields[] = null;
+    	
+    	if (t != null) {
+    		try {    			
+    			fields = objectGenerator.getTheClass().getDeclaredFields();
+    			if (fields != null && fields.length > 0) {
+    				jsonObject = new JSONObject();
+    				if (jsonObject != null) {    				
+    					for (int i = 0; i < fields.length; ++i) {
+    						fields[i].setAccessible(true);
+    						jsonObject.put(fields[i].getName(), fields[i].get(t));
+    					}
+    				}
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    	
+    	return jsonObject;
+    }
+    
+    /**
+     * Method used to generate a JSONArray from a list of element
+     * @param list The list of elements to convert
+     * @return a JSONArray if ok, null otherwise
+     */
+    @SuppressWarnings("unchecked")
+	private JSONArray generateJSONArray(List<T> list) {
+    	JSONArray jsonArray = null;
+    	
+    	if (list != null) {
+    		jsonArray = new JSONArray();
+    		if (jsonArray != null) {
+    			for (T t : list) {
+    				jsonArray.add(generateJSONObject(t));
+    			}
+    		}
+    	}
+    	
+    	return jsonArray;
+    }
+    
+    /**
+     * Method used to write a list of element to JSON File
+     * @param list
+     */
+    @SuppressWarnings("unchecked")
+	private void writeListToJSONFile(List<T> list) {
+    	JSONArray jsonArray = null;
+    	JSONObject jsonObject = null;
+    	FileWriter fw = null;
+    	
+    	if (list != null) {
+    		try {    		
+    			jsonArray = generateJSONArray(list);
+    			if (jsonArray != null) { 				
+    				jsonObject = new JSONObject();
+    				if (jsonObject != null) {
+    					jsonObject.put(objectGenerator.getClassName().toLowerCase() + "s", jsonArray);
+    					fw = new FileWriter(jsonPathFile);
+    					if (fw != null) {
+    						fw.write(jsonObject.toJSONString());
+    					}
+    				}
+    			}
+			} catch (Exception ex) {
+    			ex.printStackTrace();
+    		} finally {
+    			try {
+    				if (fw != null) {
+    					fw.close();
+    				}
+    			} catch (Exception ex) {
+    				ex.printStackTrace();
+    			}
+    		}
+    	}
+    }
+    
+    /**
+     * Method used to return the maximum id of a list
+     * @return the maximum id if ok, -1 otherwise
+     */
+    public int maxId() {
+    	T maxInstance = null;
+    	int iReturn = -1;
+    	
+    	if (allInstances != null) {
+    		Optional<T> found = allInstances.stream()
+    										.max(objectGenerator.compareId());
+    		
+    		if (found != null && found.isPresent()) {
+    			maxInstance = found.get();
+    			try {    				
+    				Field field = objectGenerator.getTheClass().getDeclaredField(Constants.ID);
+    				if (field != null) {
+    					field.setAccessible(true);
+    					iReturn = (Integer)field.get(maxInstance);
+    				}
+    			} catch (Exception ex) {
+    				ex.printStackTrace();
+    			}
+    		}
+    	}
+    	
+    	return iReturn;
+    }
+}

@@ -1,0 +1,33 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.usermanagement;
+
+import com.etna.mypenelope.core.LogManager;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
+
+/**
+ * FXML Controller class
+ * User management controller class
+ * @author soubri_j/martin_m
+ */
+public class FXMLUserManagementController implements Initializable {
+    Tab tabUser = null;
+    
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+    }    
+    
+    public void test() {
+        LogManager.getInstance().log("I click");
+    }
+}

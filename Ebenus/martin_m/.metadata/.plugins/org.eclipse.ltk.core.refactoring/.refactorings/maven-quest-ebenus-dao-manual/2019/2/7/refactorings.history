@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;com.cours.ebenus.utils.CreateObjectUtil.java&apos; to &apos;GenericObjectUtil.java&apos;&#x0A;- Original project: &apos;maven-quest-ebenus-dao-manual&apos;&#x0A;- Original element: &apos;com.cours.ebenus.utils.CreateObjectUtil.java&apos;&#x0A;- Renamed element: &apos;com.cours.ebenus.utils.GenericObjectUtil.java&apos;" description="Rename compilation unit &apos;CreateObjectUtil.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src\/main\/java&lt;com.cours.ebenus.utils{CreateObjectUtil.java" name="GenericObjectUtil.java" references="false" stamp="1549918828545" version="1.0"/>
+</session>

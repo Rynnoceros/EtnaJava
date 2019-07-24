@@ -1,0 +1,49 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.core.dao.impl;
+
+import com.etna.mypenelope.core.LogManager;
+import com.etna.mypenelope.core.entities.Document;
+import com.etna.mypenelope.core.entities.ProjectDocument;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * ProjectDocumentSQLDao class.
+ * @author soubri_j/martin_m
+ */
+public class ProjectDocumentSQLDao extends AbstractSQLDao<ProjectDocument>{
+    
+    public ProjectDocumentSQLDao(Class<ProjectDocument> t, String tableName) {
+        super(t, tableName);
+    }
+    
+    public Predicate<ProjectDocument> filterByIdProject(Integer idProject) {
+        return p -> p.getIdProject() == idProject;
+    }
+    
+    public boolean deleteWhereDocument(Document document) {
+        boolean toReturn = false;
+        
+        if (document != null) {
+            try {
+                String strRequete = constructDeleteQuery(Document.class.getSimpleName());
+                PreparedStatement ps = this.connexion.ObtenirConnexion().prepareStatement(strRequete);
+                if (ps != null) {
+                    toReturn = ps.execute();
+                }
+            } catch (SQLException ex) {
+                LogManager.getInstance().log(ex.getLocalizedMessage());
+            }
+        }
+        
+        return toReturn;
+    }
+}

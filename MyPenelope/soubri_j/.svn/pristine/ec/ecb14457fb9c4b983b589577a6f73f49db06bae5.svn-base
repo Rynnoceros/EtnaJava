@@ -1,0 +1,38 @@
+/**
+ * Log manager class
+ */
+package com.cours.Core;
+
+public class LogManager {
+	/**
+	 * Singleton implementation with Holder
+	 * @author soubri_j/martin_m
+	 */
+	private static class LogManagerHolder {
+		private static final LogManager instance = new LogManager();
+	}
+	
+    /**
+     * Returns a unique instance of LogManager. 
+     * 
+     * @return The unique instance of LogManager. 
+     */
+    public static LogManager getInstance() {
+        return LogManagerHolder.instance;
+    }
+ 
+    /**
+     * Service initialization. 
+     */
+    public void init(){
+    	System.out.println("Log : Initialisation du service");
+    }
+ 
+    /**
+     * Logs a message. 
+     * @param Message to log. 
+     */
+    public void log(String message){
+        System.out.println("Log : " + message);
+    }
+}

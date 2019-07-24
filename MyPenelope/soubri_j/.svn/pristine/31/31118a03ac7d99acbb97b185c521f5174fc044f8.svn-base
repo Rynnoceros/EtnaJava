@@ -1,0 +1,46 @@
+package com.cours.Core;
+
+public class ViewManager {
+	private static final ViewManager instance = new ViewManager();
+	 
+    private CoreView view;
+ 
+    /**
+     * Retourne l'instance unique de ViewManager.
+     *
+     * @return L'instance unique de ViewManager.
+     */
+    public static ViewManager getInstance() {
+        return instance;
+    }
+ 
+    /**
+     * Initialise le service.
+     */
+    public void init() {
+        view = new CoreView();
+    }
+ 
+    /**
+     * Affiche la vue.
+     */
+    public void display() {
+        view.setVisible(true);
+    }
+ 
+    /**
+     * Ferme la vue.
+     */
+    public void close() {
+        view.dispose();
+    }
+ 
+    /**
+     * Affiche du texte sur la vue.
+     *
+     * @param text Le texte à afficher.
+     */
+    public void displayText(String text) {
+        view.addText(text);
+    }
+}

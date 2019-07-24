@@ -1,0 +1,32 @@
+package com.cours.Modules;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import com.cours.Core.IModule;
+import com.cours.Core.LogManager;
+import com.cours.Core.ViewManager;
+
+public class UserManagement implements IModule{
+	 @Override
+	    public void plug() {
+	        LogManager.getInstance().log("Premier module");
+	        JPanel panel = new JPanel();	    
+	        BoxLayout box = new BoxLayout(panel, 0);
+	        panel.setLayout(box);
+	        panel.add(new JButton("Je suis le premier module pluggé."));
+	        panel.add(new JButton("J'affiche du texte."));
+	        ViewManager.getInstance().loadGraphicalElement("First Pluggin", panel);
+	    }
+	 
+	    @Override
+	    public void unplug() {
+	        LogManager.getInstance().log("Je sors");
+	    }
+	 
+	    @Override
+	    public String getName() {
+	        return "Module numéro 1";
+	    }
+}

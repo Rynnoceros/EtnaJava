@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" 
+            xmlns="http://javafx.com/javafx/10.0.1" 
+            fx:controller="com.etna.mypenelope.modules.contacts.FXMLContactManagementController">
+   <children>
+      <Label layoutX="2.0" layoutY="6.0" text="Contacts list" />
+      <ListView fx:id="lvContacts" layoutY="23.0" prefHeight="371.0" prefWidth="152.0" />
+      <Separator layoutX="152.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="3.0" />
+      <Button layoutX="157.0" layoutY="3.0" mnemonicParsing="false" text="Add contact" 
+                onAction="#addContact" />
+      <Button fx:id="btnRemove" layoutX="257.0" layoutY="3.0" mnemonicParsing="false" text="Remove contact" 
+                onAction="#removeContact" />
+      <Label layoutX="158.0" layoutY="38.0" text="Contact information" />
+      <Separator layoutX="155.0" layoutY="58.0" prefHeight="3.0" prefWidth="444.0" />
+      <TextField fx:id="txtPrenom" layoutX="224.0" layoutY="70.0" prefHeight="27.0" prefWidth="369.0" />
+      <TextField fx:id="txtNom" layoutX="224.0" layoutY="116.0" prefHeight="27.0" prefWidth="369.0" />
+      <TextField fx:id="txtMail" layoutX="224.0" layoutY="159.0" prefHeight="27.0" prefWidth="369.0" />
+      <Label layoutX="158.0" layoutY="75.0" prefHeight="17.0" prefWidth="109.0" text="Prenom" />
+      <Label layoutX="158.0" layoutY="121.0" prefHeight="17.0" prefWidth="109.0" text="Nom" />
+      <Label layoutX="158.0" layoutY="164.0" prefHeight="17.0" prefWidth="109.0" text="Mail" />
+      <Button fx:id="btnSave" layoutX="158.0" layoutY="200.0" mnemonicParsing="false" 
+              onAction="#saveContact" text="Save contact" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,121 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.dao.impl.csv;
+
+import com.cours.dao.IDao;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import com.cours.utils.CreateObjectUtil;
+import com.cours.utils.StringUtil;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author ElHadji
+ * @param <T>
+ */
+public abstract class AbstractCsvDao<T> implements IDao<T> {
+	private String headers[] = null;
+    private String csvPathFile = null;
+    private MySubjectObserver mySubject = null;
+    private CreateObjectUtil<T> objectGenerator = null;
+
+    public AbstractCsvDao(Class<T> myClass, MySubjectObserver mySubject, String csvPathFile) {
+        this.mySubject = mySubject;
+        this.csvPathFile = csvPathFile;
+        this.objectGenerator = new CreateObjectUtil<T>(myClass);
+    }
+
+    public AbstractCsvDao(Class<T> myClass, String csvPathFile) {
+        this.csvPathFile = csvPathFile;
+        this.objectGenerator = new CreateObjectUtil<T>(myClass);
+    }
+
+    @Override
+    public List<T> findAll() {
+    	List<T> toReturn = null;
+    	FileReader fr = null;
+    	BufferedReader br = null;
+    	String line[] = null;
+    			
+    	if (this.csvPathFile != null)
+    	{
+    		try {
+				fr = new FileReader(this.csvPathFile);
+				if (fr != null) {
+					br = new BufferedReader(fr);
+					if (br != null) {						
+						headers = StringUtil.getFields(br.readLine(), Constants.CSV_SEPARATOR);
+						if (headers != null) {
+							toReturn = new ArrayList<T>();
+							do {
+								line = StringUtil.getFields(br.readLine(), Constants.CSV_SEPARATOR);
+								if (line != null) {
+									T instance = objectGenerator.getInstanceFromLine(headers, line);
+									if (instance != null) {
+										toReturn.add(instance);
+									}
+								}
+							} while (line != null);
+						}
+					}
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (fr != null) {
+						fr.close();
+					}
+					if (br != null) {
+						br.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}  		
+    	}
+    	
+        return toReturn;
+    }
+
+    @Override
+    public T findById(int id) {
+    	List<T> allInstances = findAll();
+    	T toReturn = null;
+    	
+    	if (allInstances != null) {
+    		allInstances.stream()
+    					.filter(t -> t.getClass().getDeclaredField("id"). == id)
+    					.collect(toList());
+    	}
+    	
+        return toReturn;
+    }
+
+    @Override
+    public List<T> findByCriteria(String criteria, Object valueCriteria) {
+        return null;
+    }
+
+    @Override
+    public T create(T t) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(T t) {
+        return false;
+    }
+}

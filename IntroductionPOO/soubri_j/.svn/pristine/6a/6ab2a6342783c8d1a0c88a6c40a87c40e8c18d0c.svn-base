@@ -1,0 +1,97 @@
+package com.cours.dao.impl.csv;
+
+import com.cours.dao.IPersonneDao;
+import com.cours.entities.Personne;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import java.util.List;
+
+public class CsvPersonneDaoImpl extends AbstractCsvDao<Personne> implements IPersonneDao {
+
+    private static final String personnesCsvPathFile = Constants.PERSONNES_CSV_PATH_FILE;
+    private static MySubjectObserver subject = null;
+    private boolean sendNotification = true;
+    
+    private CsvPersonneDaoImpl() {
+    	super(Personne.class, personnesCsvPathFile);
+    }
+
+    private CsvPersonneDaoImpl(MySubjectObserver s) {
+        super(Personne.class, s, personnesCsvPathFile);
+        subject = s;
+    }
+    
+    private static class CsvPersonneDaoImplHolder {
+    	private final static CsvPersonneDaoImpl instance = new CsvPersonneDaoImpl(subject);
+    }
+    
+    public static CsvPersonneDaoImpl getInstance() {
+    	return CsvPersonneDaoImplHolder.instance;
+    }
+    
+    public static CsvPersonneDaoImpl getInstance(MySubjectObserver s) {
+    	subject = s;
+    	return CsvPersonneDaoImplHolder.instance;
+    }
+    
+
+    @Override
+    public Personne findById(int idPersonne) {
+        return super.findById(idPersonne);
+    }
+
+    @Override
+    public Personne create(Personne obj) {
+    	Personne toReturn = null;
+    	if (obj != null) {
+    		obj.setId(generateIdNewPersonne());
+    	}
+    	toReturn = super.create(obj);
+    	if (toReturn != null) {    		
+    		notifyObservers(obj, Constants.CREATE);
+    	}
+    	return toReturn;
+    }
+
+    @Override
+    public boolean delete(Personne person) {
+    	boolean toReturn = super.delete(person);
+    	if (toReturn) {
+    		notifyObservers(person, Constants.DELETE);
+    	}
+        return toReturn;
+    }
+
+    @Override
+    public List<Personne> findAll() {
+    	allInstances = super.findAll();
+    	
+    	if (allInstances != null) {
+    		lastId = allInstances.get(allInstances.size() - 1).getId();
+    	}
+        return allInstances;
+    }
+
+    @Override
+    public int generateIdNewPersonne() {
+        return ++lastId;
+    }
+
+    @Override
+    public boolean sendNotification() {
+        return sendNotification;
+    }
+
+    @Override
+    public void setSendNotification(boolean sendNotification) {
+        this.sendNotification = sendNotification;
+    }
+    
+    private void notifyObservers(Personne person, int state)
+    {
+    	if (sendNotification && subject != null) {
+    		subject.setPerson(person);
+    		subject.setState(state);
+    	}
+    }
+}

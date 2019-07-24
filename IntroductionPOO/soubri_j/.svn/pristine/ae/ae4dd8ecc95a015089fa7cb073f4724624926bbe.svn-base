@@ -1,0 +1,163 @@
+package com.cours.utils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.function.Predicate;
+
+
+public class CreateObjectUtil<T> {
+	
+	private Class<T> theClass; 
+	
+	/**
+	 * Default constructor
+	 * @param theClass Object class to fill
+	 */
+	public CreateObjectUtil(Class<T> theClass) {
+		this.theClass = theClass;
+	}
+	
+	/**
+	 * Method to generate an instance of object from a String tab
+	 * @param headers Headers' list
+	 * @param fields Fields' list
+	 * @return An instance of the object if ok, null otherwise
+	 */
+    public T getInstanceFromLine(String headers[], String fields[]) {
+    	T instance = null;
+    	
+    	if (fields != null && headers != null && theClass != null) {
+    		try {
+    			Constructor<T> constructor = theClass.getDeclaredConstructor();
+    			if (constructor != null) {    				
+    				instance = constructor.newInstance();
+    				if (instance != null) {    					
+    					for (int i = 0; i < headers.length; ++i) {
+    						fillField(instance, headers[i], fields[i]);
+    					}
+    				}
+    			}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+    	}
+    	
+    	return instance;
+    }
+    
+    /**
+     * Predicate used to filter by id
+     * @param idToSearch Searched id
+     * @return return true if id is equal to idToSearch, false otherwise
+     */
+	public Predicate<T> filterId(int idToSearch) {
+    	return p -> equalsField(p, Constants.ID, (Integer)idToSearch);
+
+    }
+	
+	/**
+	 * Method used to filter an element on a specified criteria
+	 * @param criteria The criteria to filter
+	 * @param valueCriteria Criteria's value
+	 * @return true if criteria is equal to searched value, false otherwise
+	 */
+	public Predicate<T> filterByCriteria(String criteria, Object valueCriteria) {
+		return p -> equalsField(p, criteria, valueCriteria);
+	}
+	
+	
+	private boolean equalsField(T element, String criteria, Object value) {
+		Field field = null;
+		Class<?> fieldClass = null;
+		boolean toReturn = false;
+
+		try {
+			field = theClass.getDeclaredField(criteria);
+			field.setAccessible(true);
+			
+			if (field != null) {
+				fieldClass = field.getType();
+				if (fieldClass == Boolean.class) {
+					toReturn = ((Boolean)field.get(element) == (Boolean)value);
+				} else if (fieldClass == Byte.class) {
+					toReturn = ((Byte)field.get(element) == (Byte)value);
+				} else if (fieldClass == Character.class) {
+					toReturn = ((Character)field.get(element) == (Character)value);
+				} else if (fieldClass == Short.class) {
+					toReturn = ((Short)field.get(element) == (Short)value);
+				} else if (fieldClass == Integer.class) {
+					toReturn = ((Integer)field.get(element) == (Integer)value);
+				} else if (fieldClass == Long.class) {
+					toReturn = ((Long)field.get(element) == (Long)value);
+				} else if (fieldClass == Float.class) {
+					toReturn = ((Float)field.get(element) == (Float)value);
+				} else if (fieldClass == Double.class) {
+					toReturn = ((Double)field.get(element) == (Double)value);
+				} else if (fieldClass == Date.class) {
+					SimpleDateFormat formatter = new SimpleDateFormat(Constants.DATE_PATTERN);
+					toReturn = formatter.format(field.get(element)).equals(formatter.format((String)value));
+				} else {
+					toReturn = ((String)field.get(element)).trim().equalsIgnoreCase((String)value);
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return toReturn;
+	}
+    
+    /**
+     * Method used to fill a field
+     * @param instance Instance of the object to fill 
+     * @param fieldName The field name to fill
+     * @param value The value to put in the field
+     */
+    private void fillField(T instance, String fieldName, String value) {
+    	Field field = null;
+    	Class<?> fieldClass = null;
+    	
+		try {
+			if (value != null)
+			{
+				field = theClass.getDeclaredField(fieldName);
+				if (field != null) {
+					field.setAccessible(true);
+					fieldClass = field.getType();					
+					if (fieldClass == Boolean.class) {
+						field.set(instance, Boolean.parseBoolean(value));
+					} else if (fieldClass == Byte.class) {
+						field.set(instance, Byte.parseByte(value));
+					} else if (fieldClass == Character.class) {
+						if (value.length() > 0) {						
+							field.set(instance, value.charAt(0));
+						}
+					} else if (fieldClass == Short.class) {
+						field.set(instance, Short.parseShort(value));
+					} else if (fieldClass == Integer.class) {
+						field.set(instance, Integer.parseInt(value));
+					} else if (fieldClass == Long.class) {
+						field.set(instance, Long.parseLong(value));
+					} else if (fieldClass == Float.class) {
+						field.set(instance, Float.parseFloat(value));
+					} else if (fieldClass == Double.class) {
+						field.set(instance, Double.parseDouble(value));
+					} else if (fieldClass == Date.class) {
+						SimpleDateFormat formatter = new SimpleDateFormat(Constants.DATE_PATTERN);
+						field.set(instance, formatter.parse(value));
+					} else {
+						field.set(instance, value);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public Class<T> getTheClass() {
+    	return theClass;
+    }
+}

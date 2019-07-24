@@ -1,0 +1,208 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.main;
+
+import com.cours.calcul.Calculation;
+import com.cours.calcul.ICalculation;
+import com.cours.process.IProcessAnimal;
+import com.cours.process.ProcessAnimal;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ *
+ * @author elhad
+ */
+public class Main {
+
+    private static final Log log = LogFactory.getLog(Main.class);
+    private static ICalculation calculation = null;
+    private static IProcessAnimal processAnimal = null;
+    private static BufferedReader buffer = null;
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+    	try {
+	    	calculation = new Calculation();
+	    	buffer = new BufferedReader(new InputStreamReader(System.in));
+	        testVerifyParite();
+	        testCompareChaines();
+	        testNombreMagique();
+	        testSortMyArray();
+	        testFactorielItterative();
+	        testFactorielRecursive();
+	        
+	        processAnimal = new ProcessAnimal();
+	        testProcessAnimal();
+	        if (buffer != null) {
+	       		buffer.close();
+			}
+    	} catch (Exception ex) {
+    		System.out.println("Error : " + ex.getMessage());
+    	}
+    	
+    }
+
+    public static void testVerifyParite() {
+    	try {
+    		int iVerify = -1;
+
+			System.out.print("Entrez un nombre entier: ");
+			iVerify = calculation.verifyParite(buffer.readLine());
+			switch (iVerify) {
+    			case 0:
+    				System.out.println("Le nombre est égal à 0");
+    				break;
+    			case 1:
+    				System.out.println("Le nombre est pair et positif");
+    				break;
+    			case 2:
+    				System.out.println("Le nombre est pair et négatif");
+    				break ;
+    			case 3:
+    				System.out.println("Le nombre est impair et positif");
+    				break;
+    			case 4:
+    				System.out.println("Le nomber est impair et négatif");
+    				break;
+    			default:
+    				System.out.println("Ceci n'est pas un entier");
+			}		
+    	}
+    	catch (Exception ex){
+    		System.out.println("Error : " + ex.getMessage());
+    	}
+    }
+
+    public static void testCompareChaines() {
+    	try {
+    		String string1 = "";
+    		String string2 = "";
+    		
+    		System.out.print("Entrer la première chaîne : ");
+    		string1 = buffer.readLine();
+    		System.out.print("Entrer la deuxième chaîne : ");
+    		string2 = buffer.readLine();
+    		switch(calculation.compareChaines(string1, string2)) {
+    		case -1:
+    			System.out.println("La deuxième chaîne est supérieure à la première");
+    			break;
+    		case 0:
+    			System.out.println("Les deux chaînes sont identiques");
+    			break;
+    		case 1:
+    			System.out.println("La première chaîne est supérieure à la deuxième");
+    			break;
+    		}
+    	}
+    	catch (Exception ex) {
+    		System.out.println("Error : " + ex.getMessage());
+    	}
+    }
+
+    /**
+     * Attention pour simplifier l'exercice on ne mettre que de petit nombre
+     * entier inferieur à 17. Sinon on risque de depasser la limite prévu pour
+     * le type int. Vous pouvez donc utiliser le type entier int.
+     */
+    public static void testFactorielItterative() {
+    	try {    		
+    		int number = -1;
+    		int factoriel = 0;
+    		
+    		while (number < 0 || number > 12) {    			
+    			System.out.print("Calculer quel factoriel (Saisissez un nombre entre 0 et 12) : ");
+    			number = Integer.parseInt(buffer.readLine());
+    		}
+    		factoriel = calculation.factorielItterative(number);
+    		System.out.println("Factoriel Itérative : " + factoriel);
+    		
+    	}
+    	catch (Exception ex) {
+    		System.out.println("Error : " + ex.getMessage());
+    	}
+    }
+
+    /**
+     * Attention pour simplifier l'exercice on ne mettre que de petit nombre
+     * entier inferieur à 17. Sinon on risque de depasser la limite prévu pour
+     * le type int. Vous pouvez donc utiliser le type entier int.
+     */
+    public static void testFactorielRecursive() {
+    	try {    		
+    		int number = -1;
+    		int factoriel = 0;
+    		
+    		while (number < 0 || number > 12) {    			
+    			System.out.print("Calculer quel factoriel (Saisissez un nombre entre 0 et 12) : ");
+    			number = Integer.parseInt(buffer.readLine());
+    		}
+    		factoriel = calculation.factorielRecursive(number);
+    		System.out.println("Factoriel Récursive : " + factoriel);
+    		
+    	}
+    	catch (Exception ex) {
+    		System.out.println("Error : " + ex.getMessage());
+    	}
+    }
+
+    public static void testNombreMagique() {
+    	try {    		
+    		int[] tableau = calculation.initMyArray(100);
+    		System.out.println("Mon tableau : ");
+    		printTableau(tableau);
+    		System.out.print("Nombre magique : ");
+    		System.out.println(calculation.nombreMagique(tableau));
+    	}
+    	catch (Exception ex) {
+    		System.out.println("Error : " + ex.getMessage());
+    	}
+    }
+
+    public static void testSortMyArray() {
+    	try {
+    		int[] tableau = calculation.initMyArray(100);
+    		System.out.println("Mon tableau non trié : ");
+    		printTableau(tableau);
+    		int[] sortedTableau = calculation.sortMyArray(tableau);
+    		System.out.println("Mon tableau trié : ");
+    		printTableau(sortedTableau);
+    	}
+    	catch (Exception ex) {
+    		System.out.println("Error : " + ex.getMessage());
+    	}
+    }
+    
+    /**
+     * Affichage d'un tableau d'entier
+     * @param tableau
+     */
+    private static void printTableau(int[] tableau) {
+    	if (tableau != null ) {
+    		for (int i = 0; i < tableau.length; ++i) {
+    			System.out.println(tableau[i]);
+    		}
+    	}
+    }
+
+    public static void testProcessAnimal() {
+        processAnimal.loadAnimalsManually();
+        processAnimal.loadAnimalsFile();
+        processAnimal.calculMoyennePoidsAnimaux();
+        processAnimal.calculEcartTypePoidsAnimaux();
+        processAnimal.generateFileByName();
+        processAnimal.generateFileByWeight();
+        processAnimal.generateFileById();
+        processAnimal.generateFileByColor();
+        
+    }
+}

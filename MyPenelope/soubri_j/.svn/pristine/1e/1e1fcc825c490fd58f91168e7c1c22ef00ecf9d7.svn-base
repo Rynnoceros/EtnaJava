@@ -1,0 +1,112 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.usermanagement;
+
+import com.etna.mypenelope.core.LogManager;
+import com.etna.mypenelope.core.entities.Utilisateur;
+import com.etna.mypenelope.core.Connexion;
+import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javax.swing.JOptionPane;
+
+/**
+ * FXML Controller class
+ * User management controller class
+ * @author soubri_j/martin_m
+ */
+public class FXMLUserManagementController implements Initializable {
+    Tab tabUser = null;
+    Statement stmt;
+    Connexion maConnexion = new Connexion();
+    private ObservableList<ObservableList> data;
+    
+    @FXML
+    ListView lvUserType;
+    
+     @FXML
+    private TableView <Utilisateur> tableUtilisateurs;
+     @FXML
+    private TableColumn<Utilisateur, String> idColumn;
+    @FXML
+    private TableColumn<Utilisateur, String> lastNameColumn;
+    @FXML
+    private TableColumn<Utilisateur, String> firstNameColumn;
+    @FXML
+    private TableColumn<Utilisateur, String> mailColumn;
+    @FXML
+    private TableColumn<Utilisateur, String> mdpColumn;
+    @FXML
+    private TableColumn<Utilisateur, String> adminColumn;
+    
+    ObservableList<Utilisateur> oblist = FXCollections.observableArrayList();
+    
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        for (FXMLUserManagementController.UserType type : FXMLUserManagementController.UserType.values()) {
+            this.lvUserType.getItems().add(type.name());   
+        }
+//        lvMessageType.getSelectionModel().selectedItemProperty().addListener(OnSelectMessageTypeChanged());
+//        lvMessages.getSelectionModel().selectedItemProperty().addListener(OnSelectMessageChanged());
+//        initMessages();
+        
+        try {
+            ResultSet rst;
+            String requete = "SELECT * FROM utilisateur";
+            stmt = maConnexion.ObtenirConnexion().createStatement();
+            rst = stmt.executeQuery(requete);
+//            stmt.executeQuery(requete);
+            while (rst.next()) {
+                oblist.add(new Utilisateur (rst.getInt("idUtilisateur"),rst.getString("nom"),rst.getString("prenom"), 
+                        rst.getString("motPasse"),rst.getString("mail"),rst.getInt("admin")));
+            
+            }
+            
+//            stmt.executeUpdate(requete);
+//            JOptionPane.showMessageDialog(null, "requette bien éxécuté");
+        } catch (SQLException e) {
+            System.out.println(e);
+        } 
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("idUtilisateur"));
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        mailColumn.setCellValueFactory(new PropertyValueFactory<>("mail"));
+        mdpColumn.setCellValueFactory(new PropertyValueFactory<>("mdp"));
+        adminColumn.setCellValueFactory(new PropertyValueFactory<>("admin"));
+
+        tableUtilisateurs.setItems(oblist);
+    }
+    
+    public enum UserType {
+        ListUsers,
+        AddUsers
+    }
+    
+    public void test() {
+        
+//        String requete = "INSERT INTO PERSONNE(prenom,nom,poids,taille,rue,ville,codePostal) VALUES ('"+prenom+"','"+nom+"','"+poids+"','"+taille+"','"+rue+"','"+ville+"','"+codePostal+"')";
+        
+        
+        
+        
+
+        LogManager.getInstance().log("I click");
+    }
+}

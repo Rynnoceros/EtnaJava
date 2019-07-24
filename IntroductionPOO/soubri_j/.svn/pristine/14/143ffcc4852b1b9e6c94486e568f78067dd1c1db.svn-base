@@ -1,0 +1,45 @@
+package com.cours.dao.factory;
+
+import com.cours.dao.IPersonneDao;
+import com.cours.observer.MyObserver;
+import com.cours.observer.MySubjectObserver;
+
+public abstract class AbstractDaoFactory extends MyObserver {
+
+    public abstract IPersonneDao getPersonneDao();
+
+    public enum FactoryType {
+
+        MANUAL_DAO, CSV_DAO, XML_DAO, JSON_DAO, SQL_DAO
+    }
+
+    public static AbstractDaoFactory getDaoFactory(FactoryType type) {
+    	AbstractDaoFactory toReturn = null;
+        MySubjectObserver sujet = new MySubjectObserver();
+        CsvDaoFactory csvDaoFactory = new CsvDaoFactory(sujet);
+        XmlDaoFactory xmlDaoFactory = new XmlDaoFactory(sujet);
+        JsonDaoFactory jsonDaoFactory = new JsonDaoFactory(sujet);
+       
+        switch (type) {
+        	case CSV_DAO :
+                sujet.addObserveur(jsonDaoFactory);
+                sujet.addObserveur(xmlDaoFactory);
+        		toReturn = csvDaoFactory;
+        		break;
+        	case XML_DAO : 
+                sujet.addObserveur(jsonDaoFactory);
+                sujet.addObserveur(csvDaoFactory);
+        		toReturn = xmlDaoFactory;
+        		break;
+        	case JSON_DAO : 
+        		sujet.addObserveur(xmlDaoFactory);
+                sujet.addObserveur(csvDaoFactory);
+        		toReturn = jsonDaoFactory;
+        		break;
+        	default:
+        		toReturn = null;
+        		break;
+        }
+        return toReturn;
+    }
+}

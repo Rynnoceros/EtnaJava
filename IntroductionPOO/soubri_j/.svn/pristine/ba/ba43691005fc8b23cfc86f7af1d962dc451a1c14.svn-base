@@ -1,0 +1,47 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.main;
+
+import com.cours.singletons.AbstractSingleton;
+import com.cours.singletons.CsvSingleton;
+import com.cours.singletons.JsonSingleton;
+import com.cours.singletons.XmlSingleton;
+import com.cours.entities.Personne;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ *
+ * @author elhad
+ */
+public class MainSingleton {
+
+    private static final Log log = LogFactory.getLog(MainSingleton.class);
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        /*AbstractSingleton mySingletonCsv = CsvSingleton.getInstance();
+        List<Personne> persons = mySingletonCsv.getPersonnes();
+        for (Personne person : persons) {
+        	System.out.println(person);
+        }*/
+        
+        /*AbstractSingleton myXmlSingleton = XmlSingleton.getInstance();
+        List<Personne> persons = myXmlSingleton.getPersonnes();
+        for (Personne person : persons) {
+        	System.out.println(person);
+        }*/
+        
+        AbstractSingleton myJsonSingleton = JsonSingleton.getInstance();
+        List<Personne> persons = myJsonSingleton.getPersonnes();
+        for (Personne person : persons) {
+        	System.out.println(person);
+        }
+    }
+}

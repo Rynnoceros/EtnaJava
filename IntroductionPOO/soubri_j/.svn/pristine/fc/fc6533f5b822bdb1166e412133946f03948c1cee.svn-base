@@ -1,0 +1,59 @@
+package com.cours.dao.impl.csv;
+
+import com.cours.dao.IPersonneDao;
+import com.cours.entities.Personne;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import java.util.List;
+
+public class CsvPersonneDaoImpl /*extends AbstractCsvDao<Personne>*/ implements IPersonneDao {
+
+    private final String personnesCsvPathFile = Constants.PERSONNES_CSV_PATH_FILE;
+    private MySubjectObserver subject = null;
+    private boolean sendNotification = true;
+
+    public CsvPersonneDaoImpl() {
+    }
+
+    public CsvPersonneDaoImpl(MySubjectObserver subject) {
+        //super(Personne.class, subject, Constants.PERSONNES_CSV_PATH_FILE);
+        this.subject = subject;
+    }
+
+    @Override
+    public Personne findById(int idPersonne) {
+
+        return null;
+    }
+
+    @Override
+    public Personne create(Personne obj) {
+
+        return null;
+    }
+
+    @Override
+    public boolean delete(Personne person) {
+        return true;
+    }
+
+    @Override
+    public List<Personne> findAll() {
+        return null;
+    }
+
+    @Override
+    public int generateIdNewPersonne() {
+        return 0;
+    }
+
+    @Override
+    public boolean sendNotification() {
+        return sendNotification;
+    }
+
+    @Override
+    public void setSendNotification(boolean sendNotification) {
+        this.sendNotification = sendNotification;
+    }
+}

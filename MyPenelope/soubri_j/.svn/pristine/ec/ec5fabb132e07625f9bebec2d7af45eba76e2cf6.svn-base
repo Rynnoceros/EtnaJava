@@ -1,0 +1,91 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.messages;
+
+import com.etna.mypenelope.core.dao.impl.MessageSQLDao;
+import com.etna.mypenelope.core.entities.Message;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
+
+/**
+ * FXML Controller class
+ *
+ * @author rynnoceros
+ */
+public class FXMLMessageManagementController implements Initializable {
+    Integer loggedUser;
+    Message selectedMessage;
+    List<Message> selectedMessages;
+    MessageSQLDao messageDao = new MessageSQLDao(Message.class, "messages");
+    
+    @FXML
+    ListView lvMessageType;
+    
+    @FXML
+    ListView lvMessages;
+    
+    List<Message> receivedMessages;
+    List<Message> sentMessages;
+    
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        for (MessageType type : MessageType.values()) {
+            this.lvMessageType.getItems().add(type.name());   
+        }
+        lvMessageType.getSelectionModel().selectedItemProperty().addListener(OnSelectMessageTypeChanged());
+        lvMessages.getSelectionModel().selectedItemProperty().addListener(OnSelectMessageChanged());
+        initMessages();
+    }
+    
+    public enum MessageType {
+        ReceivedMessages,
+        SentMessages
+    }
+    
+    public ChangeListener<String> OnSelectMessageTypeChanged() {
+        return (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (newValue.equals(MessageType.ReceivedMessages.name())) {
+                loadMessages(receivedMessages);
+            } else if (newValue.equals(MessageType.SentMessages.name())) {
+                loadMessages(sentMessages);
+            }
+        };
+    }
+    
+    public ChangeListener<Message> OnSelectMessageChanged() {
+        return (ObservableValue<? extends Message> observable, Message oldValue, Message newValue) -> {
+            this.selectedMessage = newValue;
+        };
+    }
+    
+    private void loadMessages(List<Message> messages) {
+        this.lvMessages.getItems().setAll(messages);
+        this.selectedMessages = messages;
+    }
+    
+    private void initMessages() {
+        this.receivedMessages = messageDao.findReceivedMessages(1);
+        this.sentMessages = messageDao.findSentMessages(1);
+    }
+    
+    public void deleteMessage() {
+        if (selectedMessages != null && this.selectedMessage != null) {
+            this.selectedMessages.remove(this.selectedMessage);
+            this.selectedMessage = null;
+            this.lvMessages.getItems().setAll(this.selectedMessages);
+        }
+    }
+}

@@ -1,0 +1,28 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.singletons;
+
+import com.cours.entities.Personne;
+
+/**
+ *
+ * @author ElHadji
+ */
+public class CsvSingleton extends AbstractSingleton {
+
+    final String personnesCsvPathFile = "personnesCsv.csv";
+
+    private CsvSingleton() {
+    }
+
+    private Personne createPersonneWithFileObject(String[] attributs) {
+        return null;
+    }
+
+    @Override
+    protected void extractPersonnesDatas() {
+    }
+}

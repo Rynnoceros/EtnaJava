@@ -1,0 +1,24 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.core.dao.impl;
+
+import com.etna.mypenelope.core.entities.ProjectDocument;
+import java.util.function.Predicate;
+
+/**
+ * ProjectDocumentSQLDao class.
+ * @author soubri_j/martin_m
+ */
+public class ProjectDocumentSQLDao extends AbstractSQLDao<ProjectDocument>{
+    
+    public ProjectDocumentSQLDao(Class<ProjectDocument> t, String tableName) {
+        super(t, tableName);
+    }
+    
+    public Predicate<ProjectDocument> filterByIdProject(Integer idProject) {
+        return p -> p.getIdProject() == idProject;
+    }
+}

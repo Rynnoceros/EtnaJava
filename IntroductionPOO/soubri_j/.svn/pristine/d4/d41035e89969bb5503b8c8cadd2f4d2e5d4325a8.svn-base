@@ -1,0 +1,17 @@
+package com.cours.main;
+
+import java.util.List;
+
+import com.cours.dao.impl.csv.CsvPersonneDaoImpl;
+import com.cours.entities.Personne;
+
+public class MainDao {
+
+    public static void main(String[] args) {
+    	CsvPersonneDaoImpl csv = new CsvPersonneDaoImpl();
+    	List<Personne> personnes = csv.findAll();
+    	for (Personne personne : personnes) {
+    		System.out.println(personne);
+    	}
+    }
+}

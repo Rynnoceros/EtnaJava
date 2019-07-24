@@ -1,0 +1,129 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.singletons;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import com.cours.entities.Personne;
+import com.cours.utils.Constants;
+
+/**
+ *
+ * @author ElHadji
+ */
+public class CsvSingleton extends AbstractSingleton {
+
+    final String personnesCsvPathFile = Constants.PERSONNES_CSV_PATH_FILE;
+    private String[] headers = null;
+
+    private CsvSingleton() {
+    	headers = Constants.CSV_HEADER.split(Constants.CSV_SEPARATOR);
+    	extractPersonnesDatas();
+    }
+    
+    /* Holder */
+    private static class CsvSingletonHolder {
+    	private final static CsvSingleton instance = new CsvSingleton();
+    }
+    
+    /**
+     * Method to get a unique instance of the CsvSingleton class
+     * @return CsvSingleton
+     */
+    public static CsvSingleton getInstance() {
+    	return CsvSingletonHolder.instance;
+    }
+
+    /**
+     * Instanciate a person with attibutes read in person file .csv
+     * @param attributs Attributes read from a file
+     * @return An instanciated Personne if ok, null otherwise.
+     */
+    private Personne createPersonneWithFileObject(String[] attributs) {
+    	Personne personToReturn = null;
+    	
+    	if (attributs != null && attributs.length > 0) {
+    		if (headers != null) {
+    			try {
+    				personToReturn = new Personne();
+    				for (int i = 0; i < headers.length; ++i) {
+    					if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_ID)) {
+    						personToReturn.setIdPersonne(Integer.parseInt(attributs[i]));
+    					} else if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_PRENOM)) {
+    						personToReturn.setPrenom(attributs[i]);
+    					} else if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_NOM)) {
+    						personToReturn.setNom(attributs[i]);
+    					} else if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_POIDS)) {
+    						personToReturn.setPoids(Double.parseDouble(attributs[i]));
+    					} else if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_TAILLE)) {
+    						personToReturn.setTaille(Double.parseDouble(attributs[i]));
+    					} else if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_RUE)) {
+    						personToReturn.setRue(attributs[i]);
+    					} else if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_VILLE)) {
+    						personToReturn.setVille(attributs[i]);
+    					} else if (headers[i].equalsIgnoreCase(Constants.CSV_ATTRIBUTE_CODE_POSTAL)) {
+    						personToReturn.setCodePostal(attributs[i]);
+    					}
+    				}    				
+    			}
+    			catch (Exception ex) {
+    				ex.printStackTrace();
+    			}
+    		}
+    	}
+    	
+        return personToReturn;
+    }
+
+    /**
+     * Method to load a list of Personne from a file to a list in memory.
+     */
+    @Override
+    protected void extractPersonnesDatas() {
+    	FileReader fr = null;
+    	BufferedReader br = null;
+    	String readLine = "";
+    	Personne personToAdd = null;
+    	
+    	try {
+			fr = new FileReader(personnesCsvPathFile);
+			if (fr != null) {
+				br = new BufferedReader(fr);
+				if (br != null) {
+					personnes = new ArrayList<Personne>();
+					// The first line contains headers
+					readLine = br.readLine();
+					if (readLine != null && readLine.equalsIgnoreCase(Constants.CSV_HEADER)) {						
+						while ((readLine = br.readLine()) != null) {
+							personToAdd = createPersonneWithFileObject(readLine.split(Constants.CSV_SEPARATOR));
+							if (personToAdd != null) {
+								personnes.add(personToAdd);
+							}
+						}
+					} else {
+						System.out.println("Wrong csv file format");
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+				if (fr != null) {
+					fr.close();
+				}				
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+    }
+}

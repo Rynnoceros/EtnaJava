@@ -1,0 +1,4 @@
+mysql.driver=com.mysql.cj.jdbc.Driver
+mysql.database.url=jdbc:mysql://localhost:3306/base_penelope
+mysql.root.user=root
+mysql.root.password=admin

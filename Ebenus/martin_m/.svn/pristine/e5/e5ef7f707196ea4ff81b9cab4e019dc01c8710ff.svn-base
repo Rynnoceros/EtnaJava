@@ -1,0 +1,16 @@
+package com.cours.ebenus.dao.impl.csv;
+
+import com.cours.ebenus.dao.entities.Utilisateur;
+
+public class UtilisateurCsvDao extends AbstractCsvDao<Utilisateur> {
+
+	public UtilisateurCsvDao(Class<Utilisateur> myClass, String csvPathFile) {
+		super(myClass, csvPathFile);
+	}
+
+	@Override
+	public Utilisateur update(Utilisateur t) {
+		return super.update(t);
+	}
+
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;com.cours.ebenus.dao.annotations.Table.java&apos; to &apos;TableName.java&apos;&#x0A;- Original project: &apos;maven-quest-ebenus-dao-orm-jdbc&apos;&#x0A;- Original element: &apos;com.cours.ebenus.dao.annotations.Table.java&apos;&#x0A;- Renamed element: &apos;com.cours.ebenus.dao.annotations.TableName.java&apos;" description="Rename compilation unit &apos;Table.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src\/main\/java&lt;com.cours.ebenus.dao.annotations{Table.java" name="TableName.java" references="false" stamp="1552688078062" version="1.0"/>
+</session>

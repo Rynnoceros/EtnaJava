@@ -1,0 +1,62 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.impl;
+
+import com.cours.ebenus.dao.IAdresseDao;
+import com.cours.ebenus.dao.entities.Adresse;
+import com.cours.ebenus.utils.Constants;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ * Adresse DAO
+ * @author soubri_j/martin_m
+ */
+public class AdresseDao extends AbstractDao<Adresse> implements IAdresseDao {
+
+    private static final Log log = LogFactory.getLog(AdresseDao.class);
+    
+    public AdresseDao() {
+        super(Adresse.class);
+    }
+
+    @Override
+    public List<Adresse> findAllAdresses() {
+        return super.findByCriteria(Constants.SELECT_ALL_ADRESSE, new String[] {}, new String[] {});
+    }
+
+    @Override
+    public Adresse findAdresseById(int idAdresse) {
+        List<Adresse> adresses = super.findByCriteria(Constants.SELECT_ADRESSE_BY_PARAMETER, new String[] {"idAdresse"}, new String[] {String.valueOf(idAdresse)});
+        if (adresses != null && adresses.size() > 0) {
+            return adresses.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Adresse> findAdresseByRue(String rue) {
+        return super.findByCriteria(Constants.SELECT_ADRESSE_BY_PARAMETER, new String[] {"rue"}, new String[] { rue });
+    }
+
+    @Override
+    public Adresse createAdresse(Adresse adresse) {
+        return super.create(adresse);
+    }
+
+    @Override
+    public Adresse updateAdresse(Adresse adresse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean deleteAdresse(Adresse adresse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+}

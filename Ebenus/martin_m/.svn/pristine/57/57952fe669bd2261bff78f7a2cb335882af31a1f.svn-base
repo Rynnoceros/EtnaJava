@@ -1,0 +1,31 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao;
+
+import com.cours.ebenus.dao.entities.Adresse;
+import java.util.List;
+
+/**
+ * Adresse interface for DAO
+ * @author soubri_j/martin_m
+ */
+public interface IAdresseDao {
+    public List<Adresse> findAllAdresses();
+
+    public Adresse findAdresseById(int idAdresse);
+
+    public List<Adresse> findAdresseByRue(String rue);
+    
+    public List<Adresse> findAdresseByIdUtilisateur(int idUtilisateur);
+    
+    public Adresse findAdresseFacturationByIdUtilisateur(int idUtilisateur);
+
+    public Adresse createAdresse(Adresse adresse);
+
+    public Adresse updateAdresse(Adresse adresse);
+
+    public boolean deleteAdresse(Adresse adresse);
+}

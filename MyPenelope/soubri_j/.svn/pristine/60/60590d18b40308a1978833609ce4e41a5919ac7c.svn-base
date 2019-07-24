@@ -1,0 +1,25 @@
+package com.cours.Modules;
+
+import com.cours.Core.IModule;
+import com.cours.Core.LogManager;
+import com.cours.Core.ViewManager;
+
+public class PremierModuleTest implements IModule{
+	 @Override
+	    public void plug() {
+	        LogManager.getInstance().log("Premier module");
+	 
+	        ViewManager.getInstance().displayText("Je suis le premier module pluggé. ");
+	        ViewManager.getInstance().displayText("J'affiche du texte. ");
+	    }
+	 
+	    @Override
+	    public void unplug() {
+	        LogManager.getInstance().log("Je sors");
+	    }
+	 
+	    @Override
+	    public String getName() {
+	        return "Module numéro 1";
+	    }
+}

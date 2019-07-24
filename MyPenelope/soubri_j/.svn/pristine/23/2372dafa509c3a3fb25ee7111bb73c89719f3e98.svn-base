@@ -1,0 +1,101 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.main;
+
+import com.etna.mypenelope.core.Constants;
+import com.etna.mypenelope.core.Core;
+import com.etna.mypenelope.core.IModule;
+import com.etna.mypenelope.core.dao.impl.UtilisateurSQLDao;
+import com.etna.mypenelope.core.entities.Utilisateur;
+import com.etna.mypenelope.core.modules.AbstractModule;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.function.Predicate;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+
+/**
+ * Main page controller
+ * @author soubri_j/martin_m
+ */
+public class FXMLMyPenelopeController implements Initializable { 
+    private final UtilisateurSQLDao utilisateurDao = new UtilisateurSQLDao(Utilisateur.class, Constants.TABLE_UTILISATEUR);
+    protected Utilisateur user;
+    
+    @FXML
+    private TabPane tabPane;
+    
+    @FXML
+    Label lblUser;
+    
+    @FXML
+    TextField txtLogin;
+            
+    @FXML
+    PasswordField txtPassword;
+    
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        //TODO
+    }
+    
+    /**
+     * Method used to add a tab to the elements
+     * @param tabToAdd The tab to add
+     */
+    public void addTab(Tab tabToAdd) {
+        if (tabToAdd != null) {
+            tabPane.getTabs().add(tabToAdd);
+        }
+    }
+    
+    /**
+     * Method used to remove a tab from the elements
+     * @param name Tab name to remove
+     */
+    public void removeTab(String name) {
+        if (name != null) {
+            tabPane.getTabs().removeIf(filterByName(name));
+        }
+    }
+    
+    private Predicate<Tab> filterByName(String name) {
+        return p -> p.getText().equals(name);
+    }
+    
+    public void connection() {
+        if (!txtLogin.getText().isEmpty() && !txtPassword.getText().isEmpty()) {
+            List<Utilisateur> users = utilisateurDao.findByCriteria("mail", txtLogin.getText());
+            if (users != null && users.size() == 1) {
+                Utilisateur utilisateur = users.get(0);
+                if (utilisateur.getMdp().equals(txtPassword.getText())) {
+                    this.user = utilisateur;
+                    lblUser.setText(utilisateur.toString());
+                    loadAuthorizedModules();
+                }
+            }
+        }
+    }
+    
+    private void loadAuthorizedModules() {
+        List<IModule> modules = Core.getInstance().getModules();
+        
+        for (IModule module : modules) {
+            AbstractModule am = (AbstractModule)module;
+            am.unplug();
+            am.authenticate(this.user);
+            if (am.hasRight()) {
+                am.plug();
+            }
+        }
+    }
+}

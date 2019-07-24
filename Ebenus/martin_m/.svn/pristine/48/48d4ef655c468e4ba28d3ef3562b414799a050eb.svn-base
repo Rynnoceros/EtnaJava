@@ -1,0 +1,65 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.servlets;
+
+import com.cours.ebenus.dao.entities.Produit;
+import java.io.IOException;
+import com.cours.ebenus.service.IServiceFacade;
+import com.cours.ebenus.service.impl.ServiceFacade;
+import com.cours.ebenus.utils.UserConnectedManager;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author soubri_j/martin_m
+ */
+public class DetailProductServlet extends HttpServlet {
+
+    private IServiceFacade serviceFacade = null;
+    private String idArticle = null;
+    private String idPage = null;
+    
+    @Override
+    public void init() throws ServletException {
+        serviceFacade = new ServiceFacade() ;
+    }
+     
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("loggedUser", UserConnectedManager.getInstance().getLoggedUser());
+        request.setAttribute("connected", UserConnectedManager.getInstance().isUserConnected());
+        if (UserConnectedManager.getInstance().isUserConnected()) {
+            Produit product = null;
+        
+            if (request.getAttribute("error") != null) {
+                this.getServletContext().getRequestDispatcher("/pages/404/404.jsp").forward(request, response);
+            } else {
+                idPage = request.getParameter("id");
+//                adresseFacturation = request.getParameter("idUtilisateur");
+                if (idPage != null) {
+                    product = serviceFacade.getProduitDao().findProduitById(Integer.parseInt(idPage));
+                }
+                if (product == null) {
+                    product = new Produit();
+                }
+                String produitRef = product.getDescription();
+                System.out.print(produitRef);
+                request.setAttribute("product", product);
+                request.setAttribute("produitRef", produitRef);
+                
+                this.getServletContext().getRequestDispatcher("/pages/articles/detailProduit.jsp").forward(request, response);
+            }
+            
+        } else {
+            request.getRequestDispatcher("/pages/login/login.jsp").forward(request, response);
+        }
+    }
+
+}

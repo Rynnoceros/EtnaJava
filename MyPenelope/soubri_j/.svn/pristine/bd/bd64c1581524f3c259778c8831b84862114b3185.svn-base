@@ -1,0 +1,92 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.core.dao.impl;
+
+import com.etna.mypenelope.core.Connexion;
+import com.etna.mypenelope.core.entities.Message;
+import com.etna.mypenelope.core.entities.MessageDestinataire;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+/**
+ *
+ * @author soubri_j/martin_m
+ */
+public class MessageSQLDao extends AbstractSQLDao<Message> {
+    private MessageDestinataireSQLDao destinataires = new MessageDestinataireSQLDao(MessageDestinataire.class, "messages_destinataires");
+    
+    public MessageSQLDao(Class<Message> t, String tableName) {
+        super(t, tableName);
+        this.connexion = new Connexion();
+    }
+    
+    public List<Message> findAllMessage() {
+        List<Message> toReturn = new ArrayList<Message>();
+        
+        toReturn = super.findAll();
+        for (Message message : toReturn) {
+            List<MessageDestinataire> tmp = destinataires.findByCriteria("idMessage", message.getIdMessage());
+            message.setDestinataires(tmp);
+        }
+        return toReturn;
+    }
+    
+    public Message findByIdMessage(Integer idMessage) {
+        Message toReturn = null;
+        
+        toReturn = super.findById(idMessage);
+        if (toReturn != null) {
+            toReturn.setDestinataires(destinataires.findByCriteria("idMessage", toReturn.getIdMessage()));
+        }
+        return toReturn;
+    }
+    
+    public List<Message> findByCriteriaMessage(String criteria, Object value) {
+        List<Message> toReturn = null;
+        
+        toReturn = super.findByCriteria(criteria, value);
+        for (Message message : toReturn) {
+            message.setDestinataires(destinataires.findByCriteria("idMessage", message.getIdMessage()));
+        }
+        return toReturn;
+    }
+    
+    public List<Message> findReceivedMessages(Integer idUtilisateur) {
+        List<Message> toReturn = findAllMessage();
+        
+        toReturn.stream().filter(filterByIdUtilisateur(idUtilisateur))
+                         .collect(Collectors.toList());
+        return toReturn;
+    }
+    
+    public List<Message> findSentMessages(Integer idExpediteur) {
+        List<Message> toReturn = findAllMessage();
+        
+        toReturn.stream().filter(filterByIdExpediteur(idExpediteur))
+                .collect(Collectors.toList());
+        return toReturn;
+    }
+    
+    private Predicate<Message> filterByIdExpediteur(Integer idExpediteur) {
+        return p -> p.getExpediteur() == idExpediteur;
+    }
+    
+    private Predicate<Message> filterByIdUtilisateur(Integer idUtilisateur) {
+        return p -> containsUtilisateur(p, idUtilisateur);
+    }
+
+    private boolean containsUtilisateur(Message message, Integer idUtilisateur) {
+        boolean toReturn = false;
+        for (MessageDestinataire md : message.getDestinataires()) {
+            if (md.getIdUtilisateur() == idUtilisateur) {
+                return true;
+            }
+        }
+        return toReturn;
+    }
+}

@@ -1,0 +1,82 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.core.entities;
+
+import java.util.List;
+
+/**
+ * Message class
+ * @author rynnoceros
+ */
+public class Message {
+    int idMessage;
+    Integer idExpediteur;
+    List<Integer> idDestinataires;
+    String title;
+    String content;
+    Status status;
+    
+    public Message() {
+        
+    }
+    
+    public Message(Integer idExpediteur, List<Integer> idDestinataires, String title, String content, Status status) {
+        this.idExpediteur = idExpediteur;
+        this.idDestinataires = idDestinataires;
+        this.title = title;
+        this.content = content;
+        this.status = status;
+    }
+    
+    public enum Status {
+        NonLu,
+        Lu
+    }
+    
+    public void setExpediteur(Integer idExpediteur) {
+        this.idExpediteur = idExpediteur;
+    }
+
+    public void setDestinataires(List<Integer> destinataires) {
+        this.idDestinataires = destinataires;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getExpediteur() {
+        return idExpediteur;
+    }
+
+    public List<Integer> getDestinataires() {
+        return idDestinataires;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+    
+    public String getContent() {
+        return content;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    
+    public String toString() {
+        return title;
+    }
+}

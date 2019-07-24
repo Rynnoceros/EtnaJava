@@ -1,0 +1,374 @@
+package com.cours.ebenus.ihm.utils;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import com.cours.ebenus.dao.entities.Utilisateur;
+import com.cours.ebenus.dao.exception.EbenusException;
+import com.cours.ebenus.models.UserModel;
+import com.cours.ebenus.service.IServiceFacade;
+import com.cours.ebenus.service.ServiceFacade;
+
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+public class UtilisateurExportImportUtil {
+
+	private IServiceFacade serviceFacade = null;
+	private static String headers = "idUtilisateur;civilite;prenom;nom;identifiant;motPasse;dateNaissance;dateModification;dateCreation;role";
+	
+	public UtilisateurExportImportUtil() {
+		serviceFacade = new ServiceFacade();
+	}
+
+	public void CsvExport(ActionEvent event) {
+		Stage current = (Stage)((Node)event.getSource()).getScene().getWindow();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Select where to save the csv file");
+		File file = fileChooser.showSaveDialog(current);
+		if (file != null) {
+			FileWriter fw = null;
+			List<Utilisateur> utilisateurs = serviceFacade.getUtilisateurDao().findAllUtilisateurs();
+			try {
+				fw = new FileWriter(file);
+				if (fw != null) {
+					fw.write(headers);
+					fw.write("\n");
+					for (Utilisateur user : utilisateurs) {
+						String line = constructLineUtilisateur(user);
+						fw.write(line);
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (fw != null) {
+					try {
+						fw.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}				
+			}
+		}
+	}
+	
+	public void XmlExport(ActionEvent event) {
+		Stage current = (Stage)((Node)event.getSource()).getScene().getWindow();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Select where to save the csv file");
+		File file = fileChooser.showSaveDialog(current);
+		if (file != null) {
+			List<Utilisateur> utilisateurs = serviceFacade.getUtilisateurDao().findAllUtilisateurs();
+			writeListToXMLFile(utilisateurs, file.getAbsolutePath());
+		}
+	}
+	
+	private void writeListToXMLFile(List<Utilisateur> allInstances, String xmlFilePath) {
+    	Document doc = null;
+    	TransformerFactory tf = null;
+    	Transformer tr = null;
+    	
+    	if (allInstances != null) {
+    		try {    			
+    			doc = createXMLDocument(allInstances);
+    			if (doc != null) {    			
+    				tf = TransformerFactory.newInstance();
+    				if (tf != null) {
+    					tr = tf.newTransformer();
+    					if (tr != null) {
+    						tr.setOutputProperty(OutputKeys.INDENT, "yes");
+    						tr.setOutputProperty(OutputKeys.METHOD, "xml");
+    						tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");    					
+    						tr.transform(new DOMSource(doc), new StreamResult(new FileOutputStream(xmlFilePath)));
+    					}
+    				}
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    }
+	
+	private Document createXMLDocument(List<Utilisateur> allInstances) {
+    	Document doc = null;
+    	Element root = null;
+    	Element element = null;
+    	DocumentBuilderFactory dbf = null;
+    	DocumentBuilder db = null;
+    	
+    	if (allInstances != null) {
+    		try {
+    			dbf = DocumentBuilderFactory.newInstance();
+    			if (dbf != null) {
+    				db = dbf.newDocumentBuilder();
+    				if (db != null) {
+    					doc = db.newDocument();
+    					if (doc != null) {
+    						root = doc.createElement("utilisateurs");
+    						if (root != null) {
+    							for (Utilisateur instance : allInstances) {
+    								element = createElement(instance, doc);
+    								if (element != null) {
+    									root.appendChild(element);
+    								}
+    							}
+    							doc.appendChild(root);
+    						}
+    					}
+    				}
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    	
+    	return doc;
+    }
+	
+	private Element createElement(Utilisateur instance, Document doc) {
+    	Element toReturn = null;
+    	Element child = null;
+    	UserModel um = null;
+    	
+    	if (instance != null) {
+    		um = ModelConverter.getInstance().convertUtilisateur(instance);
+    		try {    			
+    			toReturn = doc.createElement("utilisateur");
+    			if (toReturn != null) {
+    				toReturn.setAttribute("idUtilisateur", String.valueOf(um.getIdUtilisateur()));
+    				toReturn.setAttribute("civilite", um.getCivilite());
+    				toReturn.setAttribute("prenom", um.getPrenom());
+    				toReturn.setAttribute("nom", um.getNom());
+    				toReturn.setAttribute("identifiant", um.getIdentifiant());
+    				toReturn.setAttribute("motPasse", um.getMotPasse());
+    				toReturn.setAttribute("dateNaissance", um.getDateNaissance());
+    				toReturn.setAttribute("dateModification", um.getDateModification());
+    				toReturn.setAttribute("dateCreation", um.getDateCreation());
+    				toReturn.setAttribute("role", um.getRole());    				
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    	
+    	return toReturn;
+    }
+	
+	public void JsonExport(ActionEvent event) {
+		Stage current = (Stage)((Node)event.getSource()).getScene().getWindow();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Select where to save the json file");
+		File file = fileChooser.showSaveDialog(current);
+		if (file != null) {
+			List<Utilisateur> utilisateurs = serviceFacade.getUtilisateurDao().findAllUtilisateurs();
+			writeListToJSONFile(utilisateurs, file.getAbsolutePath());
+		}
+	}
+	
+	private void writeListToJSONFile(List<Utilisateur> list, String jsonFilePath) {
+    	JSONArray jsonArray = null;
+    	JSONObject jsonObject = null;
+    	FileWriter fw = null;
+    	
+    	if (list != null) {
+    		try {    		
+    			jsonArray = generateJSONArray(list);
+    			if (jsonArray != null) { 				
+    				jsonObject = new JSONObject();
+    				if (jsonObject != null) {
+    					jsonObject.put("utilisateurs", jsonArray);
+    					fw = new FileWriter(jsonFilePath);
+    					if (fw != null) {
+    						fw.write(jsonObject.toJSONString());
+    					}
+    				}
+    			}
+			} catch (Exception ex) {
+    			ex.printStackTrace();
+    		} finally {
+    			try {
+    				if (fw != null) {
+    					fw.close();
+    				}
+    			} catch (Exception ex) {
+    				ex.printStackTrace();
+    			}
+    		}
+    	}
+    }
+	
+	private JSONArray generateJSONArray(List<Utilisateur> list) {
+    	JSONArray jsonArray = null;
+    	
+    	if (list != null) {
+    		jsonArray = new JSONArray();
+    		if (jsonArray != null) {
+    			for (Utilisateur t : list) {
+    				jsonArray.add(generateJSONObject(t));
+    			}
+    		}
+    	}
+    	
+    	return jsonArray;
+    }
+	
+	private JSONObject generateJSONObject(Utilisateur t) {
+    	JSONObject jsonObject = null;
+    	UserModel um = null;
+    	
+    	if (t != null) {
+    		um = ModelConverter.getInstance().convertUtilisateur(t);
+			jsonObject = new JSONObject();
+			if (jsonObject != null) {    
+				jsonObject.put("idUtilisateur", um.getIdUtilisateur());
+				jsonObject.put("civilite", um.getCivilite());
+				jsonObject.put("prenom", um.getPrenom());
+				jsonObject.put("nom", um.getNom());
+				jsonObject.put("identifiant", um.getIdentifiant());
+				jsonObject.put("motPasse", um.getMotPasse());
+				jsonObject.put("dateNaissance", um.getDateNaissance());
+				jsonObject.put("dateModification", um.getDateModification());
+				jsonObject.put("dateCreation", um.getDateCreation());
+				jsonObject.put("role", um.getRole());
+			}
+    	}
+    	
+    	return jsonObject;
+    }
+	
+	public void CsvImport(ActionEvent event) {
+		Stage current = (Stage)((Node)event.getSource()).getScene().getWindow();
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Select user csv file to load");
+		File file = fileChooser.showOpenDialog(current);
+		boolean isOK = true;
+		if (file != null) {
+			FileReader fr = null;
+			BufferedReader br = null;
+			try {
+				fr = new FileReader(file);
+				if (fr != null) {
+					br = new BufferedReader(fr);
+					String headers = br.readLine();
+					String line = br.readLine();
+					while (line != null) {
+						loadUser(headers, line);
+						line = br.readLine();
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (fr != null) {
+						fr.close();
+					}
+					if (br != null) {
+						br.close();
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+			
+		}
+	}
+	
+	private void loadUser(String headers, String line) {
+		String[] header = headers.split(Constants.CSV_SEPARATOR);
+		String[] lin = line.split(Constants.CSV_SEPARATOR);
+		
+		if (header.length > 0) {
+			UserModel um = new UserModel();
+			for (int i = 0; i < header.length; ++i) {
+				switch (header[i]) {
+					case "idUtilisateur":
+						um.setIdUtilisateur(Integer.parseInt(lin[i]));
+						break;
+					case "civilite":
+						um.setCivilite(lin[i]);
+						break;
+					case "prenom":
+						um.setPrenom(lin[i]);
+						break;
+					case "nom":
+						um.setNom(lin[i]);
+						break;
+					case "identifiant":
+						um.setIdentifiant(lin[i]);
+						break;
+					case "motPasse":
+						um.setMotPasse(lin[i]);
+						break;
+					case "dateNaissance":
+						um.setDateNaissance(lin[i]);
+						break;
+					case "dateModification":
+						um.setDateModification(lin[i]);
+						break;
+					case "dateCreation":
+						um.setDateCreation(lin[i]);
+						break;
+					case "role":
+						um.setRole(lin[i]);
+						break;
+				}
+			}
+			try {				
+				saveUserModelInDatabase(um);
+			} catch (EbenusException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	private void saveUserModelInDatabase(UserModel um) {
+		Utilisateur user = serviceFacade.getUtilisateurDao().findUtilisateurById(um.getIdUtilisateur());
+		if (user != null) {
+			serviceFacade.getUtilisateurDao().updateUserWithoutPassword(ModelConverter.getInstance().convertUserModel(um));
+		} else {
+			serviceFacade.getUtilisateurDao().createUtilisateur(ModelConverter.getInstance().convertUserModel(um));
+		}
+	}
+	
+	private String constructLineUtilisateur(Utilisateur user) {
+		UserModel um = ModelConverter.getInstance().convertUtilisateur(user);
+		StringBuilder sb = new StringBuilder();
+		sb.append(um.getIdUtilisateur() + ";");
+		sb.append(um.getCivilite() + ";");
+		sb.append(um.getPrenom() + ";");
+		sb.append(um.getNom() + ";");
+		sb.append(um.getIdentifiant() + ";");
+		sb.append(um.getMotPasse() + ";");
+		sb.append(um.getDateNaissance() + ";");
+		sb.append(um.getDateModification() + ";");
+		sb.append(um.getDateCreation() + ";");
+		sb.append(um.getRole());
+		sb.append("\n");
+		return sb.toString();
+	}
+
+}

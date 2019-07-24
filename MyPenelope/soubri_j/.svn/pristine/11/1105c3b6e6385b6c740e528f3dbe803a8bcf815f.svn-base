@@ -1,0 +1,66 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.main;
+
+import com.etna.mypenelope.modules.usermanagement.FXMLUserManagementController;
+import com.etna.mypenelope.modules.usermanagement.UserManagement;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.function.Predicate;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+
+/**
+ * Main page controller
+ * @author soubri_j/martin_m
+ */
+public class FXMLMyPenelopeController implements Initializable {    
+    @FXML
+    private TabPane tabPane;
+    
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        //TODO
+    }
+    
+    public void load() {
+        UserManagement userManagement = new UserManagement();
+        //FXMLUserManagementController controller = new FXMLUserManagementController();
+        userManagement.plug();
+    }
+    
+    public void unload() {
+        UserManagement userManagement = new UserManagement();
+        //FXMLUserManagementController controller = new FXMLUserManagementController();
+        userManagement.unplug();
+    }
+    
+    /**
+     * Method used to add a tab to the elements
+     * @param tabToAdd The tab to add
+     */
+    public void addTab(Tab tabToAdd) {
+        if (tabToAdd != null) {
+            tabPane.getTabs().add(tabToAdd);
+        }
+    }
+    
+    /**
+     * Method used to remove a tab from the elements
+     * @param name Tab name to remove
+     */
+    public void removeTab(String name) {
+        if (name != null) {
+            tabPane.getTabs().removeIf(filterByName(name));
+        }
+    }
+    
+    private Predicate<Tab> filterByName(String name) {
+        return p -> p.getText().equals(name);
+    }
+}

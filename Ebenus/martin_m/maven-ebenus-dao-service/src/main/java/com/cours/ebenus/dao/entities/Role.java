@@ -1,0 +1,170 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.entities;
+
+import com.cours.ebenus.dao.annotations.FieldName;
+import com.cours.ebenus.dao.annotations.PrimaryKey;
+import com.cours.ebenus.dao.annotations.TableName;
+
+/**
+ * Role entity.
+ * @author soubri_j/martin_m
+ */
+@TableName(name = "Role")
+public class Role {
+    @PrimaryKey
+    private Integer idRole;
+    @FieldName(name = "identifiantRole")
+    private String identifiant;
+    @FieldName(name = "descriptionRole")
+    private String description;
+    @FieldName(name = "marquerEffacerRole")
+    private Boolean marquerEffacer = false;
+    @FieldName(name = "versionRole")
+    private Integer version = 0;
+
+    public Role() {
+    }
+
+    public Role(Integer idRole, String identifiant, String description, Boolean marquerEffacer, Integer version) {
+        this.idRole = idRole;
+        this.identifiant = identifiant;
+        this.description = description;
+        this.marquerEffacer = marquerEffacer;
+        this.version = version;
+    }
+
+    public Role(Integer idRole, String identifiant, String description, Boolean marquerEffacer) {
+        this(idRole, identifiant, description, marquerEffacer, null);
+    }
+
+    public Role(String identifiant, String description) {
+        this(null, identifiant, description, false, null);
+    }
+
+    public Role(Integer idRole) {
+        this(idRole, null, null, false, null);
+    }
+    
+    /**
+     * idRole getter.
+     * @return idRole
+     */
+    public Integer getIdRole() {
+        return idRole;
+    }
+
+    /**
+     * identifiant getter.
+     * @return String containing identifiant
+     */
+    public String getIdentifiant() {
+        return identifiant;
+    }
+
+    /**
+     * description getter
+     * @return String containing description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * marquerEffacer getter
+     * @return Boolean containing marquerEffacer value
+     */
+    public Boolean getMarquerEffacer() {
+        return marquerEffacer;
+    }
+
+    /**
+     * version getter
+     * @return version
+     */
+    public Integer getVersion() {
+        return version;
+    }
+
+    /**
+     * id Role setter
+     * @param idRole The id to set
+     */
+    public void setIdRole(Integer idRole) {
+        this.idRole = idRole;
+    }
+    
+    /**
+     * identifiant setter
+     * @param identifiant New value for identifiant 
+     */
+    public void setIdentifiant(String identifiant) {
+        this.identifiant = identifiant;
+    }
+
+    /**
+     * description setter.
+     * @param description New description value
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * marquerEffacer setter.
+     * @param marquerEffacer New value for marquerEffacer
+     */
+    public void setMarquerEffacer(Boolean marquerEffacer) {
+        this.marquerEffacer = marquerEffacer;
+    }
+
+    /**
+     * version setter.
+     * @param version New version value
+     */
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+    
+    /**
+     * toString override
+     * @return String containing description of the object
+     */
+    @Override
+    public String toString() {
+        return this.identifiant;
+    }
+    
+    /**
+     * hashCode override
+     * @return hashCode of the object
+     */
+    @Override
+    public int hashCode() {
+        return this.idRole.hashCode() + this.description.hashCode() + 
+               this.identifiant.hashCode() + this.marquerEffacer.hashCode() +
+               this.version.hashCode();
+    }
+    
+    /**
+     * equals override. Test equality of another object. The equality is based
+     * on id.
+     * @param obj Object to compare
+     * @return true if the object is equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Role)) {
+            return false;
+        }
+        Role role = (Role)obj;
+        if ((this.idRole == null && role.getIdRole() != null) ||
+            (this.idRole != null && !this.idRole.equals(role.getIdRole()))) {
+            return false;
+        }
+        return true;
+    }
+}

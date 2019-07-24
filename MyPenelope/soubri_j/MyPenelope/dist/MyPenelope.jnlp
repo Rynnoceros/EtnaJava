@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="MyPenelope.jnlp">
+  <information>
+    <title>MyPenelope</title>
+    <vendor>rynnoceros</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="MyPenelope.jar" size="95600" download="eager" />
+    <jar href="lib/mysql-connector-java-8.0.15.jar" size="2134905" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="800" height="600" main-class="com.etna.mypenelope.main.MyPenelope"  name="MyPenelope" />
+  <update check="always"/>
+</jnlp>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/documents/FXMLDocumentManagement.fxml</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/documents/FXMLDocumentManagementController.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/entities/Document.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/messages/MessageManagement.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/ProjectDocumentSQLDao.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/ModuleLoader.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/GenericObjectUtil.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/modules/AbstractModule.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/GenericSQLObjectUtil.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/usermanagement/UserManagement.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/LogManager.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/DocumentSQLDao.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/MessageSQLDao.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/ProjectSQLDao.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/contacts/FXMLContactManagement.fxml</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/ContactSQLDao.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/entities/Project.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/ViewManager.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/contacts/ContactManagement.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/interfaces/IPersonne.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/UtilisateurSQLDao.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/Constants.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/messages/FXMLMessageManagementController.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/contacts/ContactManagementManifest.mf</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/entities/Contact.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/Connexion.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/usermanagement/FXMLUserManagementController.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/dao/impl/AbstractSQLDao.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/IModule.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/main/MyPenelope.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/contacts/FXMLContactManagementController.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/modules/documents/DocumentManagement.java</file>
+            <file>file:/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/MyPenelope/soubri_j/MyPenelope/src/com/etna/mypenelope/core/entities/ProjectDocument.java</file>
+        </group>
+    </open-files>
+</project-private>

@@ -1,0 +1,57 @@
+package com.cours.dao.impl.json;
+
+import com.cours.dao.IPersonneDao;
+import com.cours.entities.Personne;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import java.util.List;
+
+public class JsonPersonneDaoImpl /*extends AbstractJsonDao<Personne>*/ implements IPersonneDao {
+
+    private final String personnesJsonPathFile = Constants.PERSONNES_JSON_PATH_FILE;
+    private MySubjectObserver subject = null;
+    private boolean sendNotification = true;
+
+    public JsonPersonneDaoImpl() {
+    }
+
+    public JsonPersonneDaoImpl(MySubjectObserver subject) {
+        //super(Personne.class, subject, Constants.PERSONNES_JSON_PATH_FILE);
+        this.subject = subject;
+    }
+
+    @Override
+    public Personne findById(int idPersonne) {
+        return null;
+    }
+
+    @Override
+    public Personne create(Personne obj) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(Personne person) {
+        return true;
+    }
+
+    @Override
+    public int generateIdNewPersonne() {
+        return 0;
+    }
+
+    @Override
+    public List<Personne> findAll() {
+        return null;
+    }
+
+    @Override
+    public boolean sendNotification() {
+        return sendNotification;
+    }
+
+    @Override
+    public void setSendNotification(boolean sendNotification) {
+        this.sendNotification = sendNotification;
+    }
+}

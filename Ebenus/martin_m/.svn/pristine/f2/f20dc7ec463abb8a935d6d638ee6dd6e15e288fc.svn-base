@@ -1,0 +1,132 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.entities;
+
+import com.cours.ebenus.dao.annotations.FetchChild;
+import com.cours.ebenus.dao.annotations.FieldName;
+import com.cours.ebenus.dao.annotations.PrimaryKey;
+import com.cours.ebenus.dao.annotations.UpdateDate;
+import java.util.Date;
+
+/**
+ * ArticleCommande entity.
+ * @author subri_j/martin_m
+ */
+public class ArticleCommande {
+    @PrimaryKey
+    private Integer idArticleCommande;
+    @FieldName (name = "totalArticleCommand")
+    private Double totalArticleCommande;
+    @FieldName (name = "referenceArticleCommande")
+    private String reference;
+    @FieldName (name = "quantiteArticleCommande")
+    private Double quantite;
+    @FieldName (name = "statutArticleCommande")
+    private String statut;
+    @UpdateDate
+    @FieldName (name = "dateModificationArticleCommande")
+    private Date dateModification;
+    @FieldName (name = "versionArticleCommande")
+    private Integer version;
+    @FetchChild (entity = Commande.class, foreignKey = "idCommande")
+    private Commande commande;
+    @FetchChild (entity = Utilisateur.class, foreignKey = "idUtilisateur")
+    private Utilisateur utilisateur;
+    @FetchChild (entity = Adresse.class, foreignKey = "idAdresse")
+    private Adresse adresse;
+    @FetchChild (entity = Produit.class, foreignKey = "idProduit")
+    private Produit produit;
+
+    /**
+     * idArticleCommande getter.
+     * @return idArticleCommande
+     */
+    public Integer getIdArticleCommande() {
+        return idArticleCommande;
+    }
+
+    /**
+     * totalArticleCommande getter.
+     * @return Double containing the total for this article for the command
+     */
+    public Double getTotalArticleCommande() {
+        return totalArticleCommande;
+    }
+
+    /**
+     * reference getter.
+     * @return String containing reference
+     */
+    public String getReference() {
+        return reference;
+    }
+
+    /**
+     * quantity getter.
+     * @return Double containing the number of article for the command
+     */
+    public Double getQuantite() {
+        return quantite;
+    }
+
+    /**
+     * statut getter.
+     * @return String containing status of the command
+     */
+    public String getStatut() {
+        return statut;
+    }
+
+    /**
+     * dateModification getter.
+     * @return dateModification
+     */
+    public Date getDateModification() {
+        return dateModification;
+    }
+
+    /**
+     * version getter.
+     * @return version
+     */
+    public Integer getVersion() {
+        return version;
+    }
+
+    /**
+     * commande getter.
+     * @return The command associated to ArticleCommand
+     */
+    public Commande getCommande() {
+        return commande;
+    }
+
+    /**
+     * utilisateur getter.
+     * @return The user associated to the command
+     */
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    /**
+     * adresse getter.
+     * @return Delivery address fot this command
+     */
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    /**
+     * produit getter.
+     * @return The product associated to the command
+     */
+    public Produit getProduit() {
+        return produit;
+    }
+    
+    
+}

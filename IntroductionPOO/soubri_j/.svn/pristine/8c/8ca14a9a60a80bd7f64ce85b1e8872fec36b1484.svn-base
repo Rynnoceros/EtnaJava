@@ -1,0 +1,355 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.dao.impl.xml;
+
+import com.cours.dao.IDao;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import com.cours.utils.CreateObjectUtil;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+/**
+ *
+ * @author ElHadji
+ * @param <T>
+ */
+public abstract class AbstractXmlDao<T> implements IDao<T> {
+
+    private String xmlPathFile = null;
+    private MySubjectObserver mySubject = null;
+    private CreateObjectUtil<T> objectGenerator = null;
+
+    public AbstractXmlDao(Class<T> myClass, MySubjectObserver mySubject, String xmlPathFile) {
+    	this.objectGenerator = new CreateObjectUtil<T>(myClass);
+        this.mySubject = mySubject;
+        this.xmlPathFile = xmlPathFile;
+    }
+
+    public AbstractXmlDao(Class<T> myClass, String xmlPathFile) {
+    	this.objectGenerator = new CreateObjectUtil<T>(myClass);
+        this.xmlPathFile = xmlPathFile;
+    }
+
+    /**
+     * Method used to read all instances of an element in a file
+     */
+    @Override
+    public List<T> findAll() {
+    	File xmlFile = null;
+    	List<T> allInstances = null;
+    	DocumentBuilderFactory dbf = null;
+    	DocumentBuilder db = null;
+    	Document doc = null;
+    	NodeList list = null;
+    	T instance = null;
+    	int iLength = 0;
+    	
+    	try {    		
+    		xmlFile = new File(xmlPathFile);
+    		if (xmlFile != null) {    			
+    			dbf = DocumentBuilderFactory.newInstance();
+    			if (dbf != null) {
+    				db = dbf.newDocumentBuilder();
+    				if (db != null) {
+    					doc = db.parse(xmlFile);
+    					if (doc != null) {
+    						doc.getDocumentElement().normalize();
+    						list = doc.getElementsByTagName(objectGenerator.getClassName().toLowerCase());
+    						if (list != null) {
+    							allInstances = new ArrayList<T>();
+    							iLength = list.getLength();
+    							for (int i = 0; i < iLength; ++i) {
+    								instance = createInstanceWithElement((Element)list.item(i));
+    								if (instance != null) {
+    									allInstances.add(instance);
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
+    	
+        return allInstances;
+    }
+    
+    /**
+     * Method used to create an generic instance of an object from a XML element
+     * @param toCreate XML element to create instance
+     * @return An instance of T object if ok, null otherwise
+     */
+    private T createInstanceWithElement(Element toCreate) {
+    	T instance = null;
+    	Field field = null;
+    	NamedNodeMap nnm = null;
+    	Node node = null;
+    	int iLength = 0;
+    	
+    	if (toCreate != null) {
+    		try {
+				instance = objectGenerator.getTheClass().newInstance();
+				if (instance != null) {
+					fillWithAttributes(instance, toCreate);
+					fillWithNodes(instance, toCreate);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+    	
+    	return instance;
+    }
+    
+    /**
+     * Method used to fill instance with attributes
+     * @param instance The instance to fill
+     * @param toCreate The XML element used to fill instance
+     */
+    private void fillWithAttributes(T instance, Element toCreate) {
+    	Field field = null;
+    	NamedNodeMap nnm = null;
+    	Node node = null;
+    	int iLength = 0;
+    	
+    	if (instance != null && toCreate != null) {
+    		try {    		
+				nnm = toCreate.getAttributes();
+				iLength = nnm.getLength();
+				for (int i = 0; i < iLength; ++i) {
+					node = nnm.item(i);
+					field = objectGenerator.getTheClass().getDeclaredField(node.getNodeName());
+					if (field != null) {
+						field.setAccessible(true);
+						objectGenerator.fillField(instance, node.getNodeName(), node.getNodeValue());
+					}
+				}
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		} 
+    	}
+    }
+    
+    /**
+     * Method used to fill instance of a T class with Nodes
+     * @param instance The instance to fill
+     * @param toCreate The XML element used to fill the instance
+     */
+    private void fillWithNodes(T instance, Element toCreate) {
+    	Node node = null;
+    	
+    	if (instance != null && toCreate != null) {
+    		try {
+    			node = toCreate.getFirstChild();
+    			while (node != null)
+    			{    				
+    				if (node.getNodeType() == Node.ELEMENT_NODE) {    					
+    					objectGenerator.fillField(instance, node.getNodeName(), node.getTextContent());
+    				}
+    				node = node.getNextSibling();
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    }
+
+    /**
+     * Method used to find an element by its id
+     */
+    @Override
+    public T findById(int id) {
+    	List<T> allInstances = findAll();
+    	T instance = null;
+    	
+    	if (allInstances != null) {
+    		Optional<T> found = allInstances.stream()
+    										.filter(objectGenerator.filterId(id))
+    										.findFirst();
+    		
+    		if (found != null && found.isPresent()) {
+    			instance = found.get();
+    		}
+    	}
+    	
+        return instance;
+    }
+
+    /**
+     * Method used to filter elements on a specific criteria
+     */
+    @Override
+    public List<T> findByCriteria(String criteria, Object valueCriteria) {
+    	List<T> allInstances = findAll();
+    	List<T> filteredList = null;
+    	
+    	if (allInstances != null) {
+    		filteredList = allInstances.stream()
+    									.filter(objectGenerator.filterByCriteria(criteria, valueCriteria))
+    									.collect(Collectors.toList());
+    	}
+    	
+        return filteredList;
+    }
+
+    /**
+     * Method used to create an new element in the file
+     */
+    @Override
+    public T create(T t) {
+    	List<T> allInstances = findAll();
+    	T toReturn = null;
+    	
+    	if (t != null && allInstances != null) {
+    		allInstances.add(t);
+    		writeListToXMLFile(allInstances);
+			toReturn = t;
+    	}
+    	
+        return toReturn;
+    }
+    
+    /**
+     * Method used to write a list of element to an XML File
+     * @param allInstances The list to write in XML File
+     */
+    private void writeListToXMLFile(List<T> allInstances) {
+    	Document doc = null;
+    	TransformerFactory tf = null;
+    	Transformer tr = null;
+    	
+    	if (allInstances != null) {
+    		try {    			
+    			doc = createXMLDocument(allInstances);
+    			if (doc != null) {    			
+    				tf = TransformerFactory.newInstance();
+    				if (tf != null) {
+    					tr = tf.newTransformer();
+    					if (tr != null) {
+    						tr.setOutputProperty(OutputKeys.INDENT, "yes");
+    						tr.setOutputProperty(OutputKeys.METHOD, "xml");
+    						tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");    					
+    						tr.transform(new DOMSource(doc), new StreamResult(new FileOutputStream(xmlPathFile)));
+    					}
+    				}
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    }
+    
+    /**
+     * Method used to generate XML Document from a list of elements
+     * @param allInstances The list of elements
+     * @return XML Document if ok, null otherwise
+     */
+    private Document createXMLDocument(List<T> allInstances) {
+    	Document doc = null;
+    	Element root = null;
+    	Element element = null;
+    	DocumentBuilderFactory dbf = null;
+    	DocumentBuilder db = null;
+    	
+    	if (allInstances != null) {
+    		try {
+    			dbf = DocumentBuilderFactory.newInstance();
+    			if (dbf != null) {
+    				db = dbf.newDocumentBuilder();
+    				if (db != null) {
+    					doc = db.newDocument();
+    					if (doc != null) {
+    						root = doc.createElement(objectGenerator.getClassName().toLowerCase() + "s");
+    						if (root != null) {
+    							for (T instance : allInstances) {
+    								element = createElement(instance, doc);
+    								if (element != null) {
+    									root.appendChild(element);
+    								}
+    							}
+    							doc.appendChild(root);
+    						}
+    					}
+    				}
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    	
+    	return doc;
+    }
+    
+    /**
+     * Method used to create an element from an instance of object
+     * @param instance The instance used to create the XML element
+     * @param doc The document used to create XML Element
+     * @return an XML Element if ok, null otherwise
+     */
+    private Element createElement(T instance, Document doc) {
+    	Element toReturn = null;
+    	Text child = null;
+    	Field[] fields = null;
+    	
+    	
+    	if (instance != null) {
+    		try {    			
+    			toReturn = doc.createElement(objectGenerator.getClassName().toLowerCase());
+    			if (toReturn != null) {
+    				fields = objectGenerator.getTheClass().getDeclaredFields();
+    				for (Field field : fields) {
+    					field.setAccessible(true);
+    					if (field.getName() == Constants.ID) {
+    						toReturn.setAttribute(Constants.ID, (String)field.get(instance));    						
+    					} else {
+    						child = doc.createTextNode(field.getName());
+    						if (child != null) {
+    							child.setTextContent((String)field.get(instance));
+    							toReturn.appendChild(child);
+    						}
+    					}
+    				}
+    				
+    			}
+    		} catch (Exception ex) {
+    			ex.printStackTrace();
+    		}
+    	}
+    	
+    	return toReturn;
+    }
+
+    @Override
+    public boolean delete(T t) {
+        return false;
+    }
+}

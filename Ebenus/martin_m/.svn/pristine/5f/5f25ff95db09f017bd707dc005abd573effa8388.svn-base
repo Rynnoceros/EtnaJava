@@ -1,0 +1,34 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.entities;
+
+import com.cours.ebenus.dao.annotations.FieldName;
+import com.cours.ebenus.dao.annotations.PrimaryKey;
+
+/**
+ * Produit entity
+ * @author soubri_j/martin_m
+ */
+public class Produit {
+    @PrimaryKey
+    private Integer idProduit;
+    @FieldName (name = "referenceProduit")
+    private String reference;
+    @FieldName (name = "prixProduit")
+    private Double prix;
+    @FieldName (name = "nomProduit")
+    private String nom;
+    @FieldName (name = "descriptionProduit")
+    private String description;
+    @FieldName (name = "stockProduit")
+    private Integer stock;
+    @FieldName (name = "activeProduit")
+    private Boolean active;
+    @FieldName (name = "marquerEffacerProduit")
+    private Boolean marquerEffacer = false;
+    @FieldName (name = "versionProduit")
+    private Integer version = 1;
+}

@@ -1,0 +1,165 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.impl;
+
+import com.cours.ebenus.dao.IUtilisateurDao;
+import com.cours.ebenus.dao.entities.Role;
+import com.cours.ebenus.dao.entities.Utilisateur;
+import com.cours.ebenus.dao.exception.EbenusException;
+import com.cours.ebenus.utils.Constants;
+
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ *
+ * @author ElHadji
+ */
+public class UtilisateurDao extends AbstractDao<Utilisateur> implements IUtilisateurDao {
+
+    private static final Log log = LogFactory.getLog(UtilisateurDao.class);
+    private RoleDao roleDao = new RoleDao();
+
+    public UtilisateurDao() {
+        super(Utilisateur.class, Constants.TABLE_UTILISATEUR);
+    }
+    
+    @Override
+    public List<Utilisateur> findAllUtilisateurs() {
+    	List<Utilisateur> all = super.findAll();
+    	
+    	for (Utilisateur user : all) {
+    		fillRole(user);
+    	}
+    	return all;
+    }
+
+    @Override
+    public Utilisateur findUtilisateurById(int idUtilisateur) {
+        Utilisateur user = super.findById(idUtilisateur);
+        if (user != null) {
+        	fillRole(user);
+        }
+        return user;
+    }
+
+    @Override
+    public List<Utilisateur> findUtilisateursByPrenom(String prenom) {
+        List<Utilisateur> all = super.findByCriteria("prenom", prenom);
+        if (all != null) {
+        	for (Utilisateur user : all) {
+        		fillRole(user);
+        	}
+        }
+        return all;
+    }
+
+    @Override
+    public List<Utilisateur> findUtilisateursByNom(String nom) {
+    	List<Utilisateur> all =  super.findByCriteria("nom", nom);
+    	if (all != null) {
+        	for (Utilisateur user : all) {
+        		fillRole(user);
+        	}
+        }
+        return all;
+    }
+
+    @Override
+    public List<Utilisateur> findUtilisateurByIdentifiant(String identifiant) {
+    	List<Utilisateur> all = super.findByCriteria("identifiant", identifiant);
+    	if (all != null) {
+        	for (Utilisateur user : all) {
+        		fillRole(user);
+        	}
+        }
+        return all;
+    }
+
+    @Override
+    public List<Utilisateur> findUtilisateursByIdRole(int idRole) {
+    	Role role = roleDao.findRoleById(idRole);
+    	if (role != null) {
+    		List<Utilisateur> toFind = super.findByCriteria(Constants.SELECT_FIND_UTILISATEUR_BY_ID_ROLE, new Object[] { idRole });
+    		for (Utilisateur user : toFind) {
+    			user.setRole(role);
+    		}
+    		return toFind;
+    	}
+        return super.findByCriteria("idRole", idRole);
+    }
+
+    @Override
+    public List<Utilisateur> findUtilisateursByIdentifiantRole(String identifiantRole) {
+    	List<Role> role = roleDao.findRoleByIdentifiant(identifiantRole);
+    	if (role != null && role.size() > 0) {
+    		List<Utilisateur> toFind = super.findByCriteria(Constants.SELECT_FIND_UTILISATEUR_BY_ID_ROLE, new Object[] { role.get(0).getIdRole() });
+    		for (Utilisateur user : toFind) {
+    			user.setRole(role.get(0));
+    		}
+    		return toFind;
+    	}
+        return null;
+    }
+    
+    private void fillRole(Utilisateur user) {
+    	if (user != null) {
+    		user.setRole(roleDao.findRoleById(user.getRole().getIdRole()));
+    	}
+    }
+
+    @Override
+    public Utilisateur createUtilisateur(Utilisateur user) {
+    	Utilisateur toCreate = null;
+    	if (user != null) {
+    		List<Utilisateur> toFind = findUtilisateurByIdentifiant(user.getIdentifiant());
+    		if (toFind == null || toFind.size() <= 0) {
+    			user.setVersion(1);
+    			user.setDateCreation(new Date());
+        		user.setDateModification(new Date());
+        		toCreate = super.create(user);
+    		} else {
+    			throw new EbenusException(String.format(Constants.ERROR_MSG_USER_EXISTING, user.getIdentifiant()), Constants.EXCEPTION_CODE_ELEMENT_ALREADY_EXIST);
+    		}
+    	}
+        return toCreate;
+    }
+
+    @Override
+    public Utilisateur updateUtilisateur(Utilisateur user) {
+    	if (user != null) {
+    		user.setDateModification(new Date());
+    		return super.update(user);
+    	}
+        return null;
+    }
+
+    @Override
+    public boolean deleteUtilisateur(Utilisateur user) {
+        return super.delete(user);
+    }
+
+    /**
+     * Méthode qui vérifie les logs email / password d'un utilisateur dans la
+     * base de données
+     *
+     * @param email L'email de l'utilisateur
+     * @param password Le password de l'utilisateur
+     * @return L'utilisateur qui tente de se logger si trouvé, null sinon
+     */
+    @Override
+    public Utilisateur authenticate(String email, String password) {
+    	List<Utilisateur> toFind = findUtilisateurByIdentifiant(email);
+    	if (toFind != null && toFind.size() > 0) {
+    		if (toFind.get(0).getMotPasse() == password) {
+    			return toFind.get(0);
+    		}
+		}
+        return null;
+    }
+}

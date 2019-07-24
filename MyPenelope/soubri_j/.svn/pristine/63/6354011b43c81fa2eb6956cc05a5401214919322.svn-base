@@ -1,0 +1,92 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.documents;
+
+import com.etna.mypenelope.core.dao.impl.ProjectDocumentSQLDao;
+import com.etna.mypenelope.core.dao.impl.ProjectSQLDao;
+import com.etna.mypenelope.core.entities.Project;
+import com.etna.mypenelope.core.entities.ProjectDocument;
+import com.etna.mypenelope.core.interfaces.IPersonne.PersonType;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+
+/**
+ * FXML Controller class
+ *
+ * @author soubri_j/martin_m
+ */
+public class FXMLDocumentManagementController implements Initializable {
+    private final ProjectSQLDao projectDao = new ProjectSQLDao(Project.class, "projects");
+    private final ProjectDocumentSQLDao projectDocumentDao = new ProjectDocumentSQLDao(ProjectDocument.class, "projects_documents");
+    
+    @FXML
+    ListView lvProjects;
+    
+    @FXML
+    ListView lvDocuments;
+    
+    @FXML
+    ComboBox cbPersonType;
+    
+    @FXML
+    ComboBox cbOwner;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        loadProjects();
+        loadPersonType();
+        lvProjects.getSelectionModel().selectedItemProperty().addListener(onProjectSelectedChanged());
+    }    
+    
+    public void addDocument() {
+        //TODO
+    }
+    
+    public void editDocument() {
+        //TODO
+    }
+    
+    public void removeDocument() {
+        //TODO
+    }
+    
+    private void loadProjects() {
+        this.lvProjects.getItems().setAll(projectDao.findAll());
+    }
+    
+    private void loadDocuments(Project project) {
+        List<ProjectDocument> all = projectDocumentDao.findAll();
+        
+        if (project != null) {
+            lvDocuments.getItems().setAll(all.stream()
+                                  .filter(projectDocumentDao.filterByIdProject(project.getIdProject()))
+                                  .collect(Collectors.toList()));
+        }
+    }
+    
+    private void loadPersonType() {
+        for (PersonType pt : PersonType.values()) {
+            this.cbPersonType.getItems().add(pt.toString());
+        }
+    }
+    
+    private ChangeListener<Project> onProjectSelectedChanged() {
+        return (ObservableValue<? extends Project> observable, Project oldValue, Project newValue) -> {
+            loadDocuments(newValue);
+        };
+    }  
+}

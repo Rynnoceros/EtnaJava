@@ -1,0 +1,67 @@
+package com.cours.dao.impl.csv;
+
+import com.cours.dao.IPersonneDao;
+import com.cours.entities.Personne;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import java.util.List;
+
+public class CsvPersonneDaoImpl extends AbstractCsvDao<Personne> implements IPersonneDao {
+
+    private final String personnesCsvPathFile = Constants.PERSONNES_CSV_PATH_FILE;
+    private MySubjectObserver subject = null;
+    private boolean sendNotification = true;
+    private int lastId = 0;
+
+    public CsvPersonneDaoImpl() {
+    	super(Personne.class, Constants.PERSONNES_CSV_PATH_FILE);
+    }
+
+    public CsvPersonneDaoImpl(MySubjectObserver subject) {
+        super(Personne.class, subject, Constants.PERSONNES_CSV_PATH_FILE);
+        this.subject = subject;
+    }
+
+    @Override
+    public Personne findById(int idPersonne) {
+        return super.findById(idPersonne);
+    }
+
+    @Override
+    public Personne create(Personne obj) {
+    	if (obj != null) {
+    		obj.setId(generateIdNewPersonne());
+    	}
+    	return super.create(obj);
+    }
+
+    @Override
+    public boolean delete(Personne person) {
+        return super.delete(person);
+    }
+
+    @Override
+    public List<Personne> findAll() {
+    	List<Personne> personnes = super.findAll();
+    	
+    	if (personnes != null) {
+    		lastId = personnes.get(personnes.size() - 1).getId();
+    	}
+        return personnes;
+    }
+
+    @Override
+    public int generateIdNewPersonne() {
+        return lastId + 1;
+    }
+
+    @Override
+    public boolean sendNotification() {
+        return sendNotification;
+    }
+
+    @Override
+    public void setSendNotification(boolean sendNotification) {
+        this.sendNotification = sendNotification;
+    }
+}

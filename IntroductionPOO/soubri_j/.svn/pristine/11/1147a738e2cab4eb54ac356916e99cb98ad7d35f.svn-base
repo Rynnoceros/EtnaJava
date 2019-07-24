@@ -1,0 +1,117 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.singletons;
+
+import com.cours.entities.Personne;
+import com.cours.utils.Constants;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+/**
+ *
+ * @author ElHadji
+ */
+public class XmlSingleton extends AbstractSingleton {
+
+    final String personnesXmlPathFile = Constants.PERSONNES_XML_PATH_FILE;
+
+    private XmlSingleton() {
+    	extractPersonnesDatas();
+    }
+    
+    /* Holder */
+    private static class XmlSingletonHolder {
+    	private final static XmlSingleton instance = new XmlSingleton();
+    }
+    
+    /**
+     * Method to get unique instance of XmlSingleton
+     * @return a unique instance of XmlSingleton
+     */
+    public static XmlSingleton getInstance() {
+    	return XmlSingletonHolder.instance;
+    }
+
+    /**
+     * Method to Instanciate a Personne from a XML element
+     * @param elementPersonne XML element
+     * @return a instanciated Personne if ok, null otherwise.
+     */
+    public Personne createPersonneWithFileObject(Element elementPersonne) {
+    	Personne personToReturn = null;
+    	
+    	if (elementPersonne != null) {
+			try {    				
+				personToReturn = new Personne();
+				personToReturn.setIdPersonne(Integer.parseInt(elementPersonne.getAttribute(Constants.XML_JSON_ATTRIBUTE_ID)));
+				personToReturn.setPrenom(elementPersonne.getElementsByTagName(Constants.XML_JSON_ATTRIBUTE_PRENOM).item(0).getTextContent());
+				personToReturn.setNom(elementPersonne.getElementsByTagName(Constants.XML_JSON_ATTRIBUTE_NOM).item(0).getTextContent());
+				personToReturn.setPoids(Double.parseDouble(elementPersonne.getElementsByTagName(Constants.XML_JSON_ATTRIBUTE_POIDS).item(0).getTextContent()));
+				personToReturn.setTaille(Double.parseDouble(elementPersonne.getElementsByTagName(Constants.XML_JSON_ATTRIBUTE_TAILLE).item(0).getTextContent()));
+				personToReturn.setRue(elementPersonne.getElementsByTagName(Constants.XML_JSON_ATTRIBUTE_RUE).item(0).getTextContent());
+				personToReturn.setVille(elementPersonne.getElementsByTagName(Constants.XML_JSON_ATTRIBUTE_VILLE).item(0).getTextContent());
+				personToReturn.setCodePostal(elementPersonne.getElementsByTagName(Constants.XML_JSON_ATTRIBUTE_CODE_POSTAL).item(0).getTextContent());				
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+    	}
+    	
+    	return personToReturn;
+    }
+
+    /**
+     * Method to read list of Personne in an XML file
+     */
+    @Override
+    protected void extractPersonnesDatas() {
+    	File xmlFile = null;
+    	DocumentBuilderFactory dbf = null;
+    	DocumentBuilder db = null;
+    	Document doc = null;
+    	NodeList list = null;
+    	Personne personToAdd = null;
+    	int iLength = 0;
+    	
+    	try {
+    		xmlFile = new File(personnesXmlPathFile);
+    		if (xmlFile != null) {
+    			dbf = DocumentBuilderFactory.newInstance();
+    			if (dbf != null) {
+    				db = dbf.newDocumentBuilder();
+    				if (db != null) {
+    					doc = db.parse(xmlFile);
+    					if (doc != null) {
+    						doc.getDocumentElement().normalize();
+    						list = doc.getElementsByTagName(Constants.XML_TAG_PERSONNE);
+    						if (list != null) {
+    							personnes = new ArrayList<Personne>();
+    							iLength = list.getLength();
+    							for (int i = 0; i < iLength; ++i) {
+    								personToAdd = createPersonneWithFileObject((Element)list.item(i));
+    								if (personToAdd != null) {
+    									personnes.add(personToAdd);
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
+    }
+
+}

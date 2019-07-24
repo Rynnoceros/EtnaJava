@@ -1,0 +1,94 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.projects;
+
+import com.etna.mypenelope.core.Constants;
+import com.etna.mypenelope.core.dao.impl.ProjectGroupeSQLDao;
+import com.etna.mypenelope.core.dao.impl.ProjectSQLDao;
+import com.etna.mypenelope.core.entities.Project;
+import com.etna.mypenelope.core.entities.ProjectGroupe;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+
+/**
+ * FXML Controller class
+ *
+ * @author soubri_j/martin_m
+ */
+public class FXMLProjectManagementController implements Initializable {
+    private final ProjectGroupeSQLDao projectGroupeDao = new ProjectGroupeSQLDao(ProjectGroupe.class, Constants.TABLE_PROJECTS_GROUPES);
+    private final ProjectSQLDao projectDao = new ProjectSQLDao(Project.class, Constants.TABLE_PROJECTS);
+    
+    @FXML
+    ListView lvProjects;
+    
+    @FXML
+    ListView lvGroups;
+    
+    @FXML
+    Button btnRemoveProject;
+    
+    @FXML
+    Button btnAddGroup;
+    
+    @FXML
+    Button btnRemoveGroup;
+    
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        btnRemoveGroup.setDisable(Boolean.TRUE);
+        btnAddGroup.setDisable(Boolean.TRUE);
+        btnRemoveProject.setDisable(Boolean.TRUE);
+        lvProjects.getSelectionModel().selectedItemProperty().addListener(onProjectSelectedChanged());
+        lvGroups.getSelectionModel().selectedItemProperty().addListener(onGroupeSelectedChanged());
+        loadProjects();
+    }    
+    
+    private ChangeListener<Project> onProjectSelectedChanged() {
+        return (ObservableValue<? extends Project> observable, Project oldValue, Project newValue) -> {
+            if (newValue != null) {
+                btnRemoveProject.setDisable(Boolean.FALSE);
+                loadGroups(newValue);
+            } else {
+                btnRemoveProject.setDisable(Boolean.TRUE);
+            }
+        };
+    }
+    
+    private ChangeListener<ProjectGroupe> onGroupeSelectedChanged() {
+        return (ObservableValue<? extends ProjectGroupe> observable, ProjectGroupe oldValue, ProjectGroupe newValue) -> {
+            if (newValue != null) {
+                btnRemoveGroup.setDisable(Boolean.FALSE);
+            } else {
+                btnRemoveGroup.setDisable(Boolean.TRUE);
+            }
+        };
+    }
+    
+    private void loadGroups(Project project) {
+        if (project != null) {
+            lvGroups.getItems().setAll(projectGroupeDao.findAllGroupes());
+        }
+    }
+    
+    private void loadProjects() {
+        List<Project> all = projectDao.findAll();
+        
+        if (all != null) {
+            lvProjects.getItems().setAll(all);
+        }
+    }
+}

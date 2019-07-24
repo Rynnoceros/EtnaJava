@@ -1,0 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.core.dao.impl;
+
+import com.etna.mypenelope.core.Connexion;
+import com.etna.mypenelope.core.entities.Utilisateur;
+import java.sql.Connection;
+
+/**
+ *
+ * @author soubri_j/martin_m
+ */
+public class UtilisateurSQLDao extends AbstractSQLDao<Utilisateur> {
+    public UtilisateurSQLDao(Class<Utilisateur> t, String tableName) {
+        super(t, tableName);
+        this.connexion = new Connexion();
+    } 
+}

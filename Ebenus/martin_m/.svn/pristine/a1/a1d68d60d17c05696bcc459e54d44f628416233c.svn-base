@@ -1,0 +1,117 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.impl;
+
+import com.cours.ebenus.dao.ICommandeDao;
+import com.cours.ebenus.dao.entities.Commande;
+import com.cours.ebenus.utils.Constants;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ * Commande DAO.
+ * @author soubri_j/martin_m
+ */
+public class CommandeDao extends AbstractDao<Commande> implements ICommandeDao{
+    
+    private static final Log log = LogFactory.getLog(CommandeDao.class);
+
+    /**
+     * Default constructor
+     */
+    private CommandeDao() {
+        super(Commande.class);
+    }
+
+    /**
+     * Holder class.
+     */
+    private static class CommandeDaoHolder {
+       private static final CommandeDao instance = new CommandeDao(); 
+    }
+    
+    /**
+     * Method used to get an instance of CommandeDao
+     * @return A unique instance of CommandeDao
+     */
+    public static CommandeDao getInstance() {
+        return CommandeDaoHolder.instance;
+    }
+    
+    /**
+     * Find all commandes.
+     * @return List of all commands in database
+     */
+    @Override
+    public List<Commande> findAllCommandes() {
+        return super.findByCriteria(Constants.SELECT_ALL_COMMANDE, new String[]{}, new String[]{});
+    }
+
+    /**
+     * Find Command by its id
+     * @param idCommande The id of the command to find
+     * @return The command if found, null otherwise
+     */
+    @Override
+    public Commande findCommandeById(int idCommande) {
+        List<Commande> commandes = super.findByCriteria(Constants.SELECT_COMMANDE_BY_PARAMETER, new String[]{ "idCommande" }, new String[] { String.valueOf(idCommande) });
+        if (commandes != null && commandes.size() > 0) {
+            return commandes.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * Find Command by idProduit
+     * @param idProduit The idProduit to find
+     * @return List of all commands containing the product
+     */
+    @Override
+    public List<Commande> findCommandeByIdProduit(Integer idProduit) {
+        return super.findByCriteria(Constants.SELECT_COMMANDE_BY_PRODUCT_PARAMETER, new String[]{ "idProduit" }, new String[] { String.valueOf(idProduit)});
+    }
+
+    /**
+     * Find Command by idUtilisateur
+     * @param idUtilisateur The idUtilisateur to find
+     * @return List of all commands passed by idUtilisateur
+     */
+    @Override
+    public List<Commande> findCommandeByIdUtilisateur(Integer idUtilisateur) {
+        return super.findByCriteria(Constants.SELECT_COMMANDE_BY_PARAMETER, new String[]{ "c.idUtilisateur" }, new String[] { String.valueOf(idUtilisateur)});
+    }
+
+    /**
+     * Create a Commande
+     * @param commande The commande to create
+     * @return The created command if ok, null otherwise
+     */
+    @Override
+    public Commande createCommande(Commande commande) {
+        return super.create(commande);
+    }
+
+    /**
+     * Udpate a Commande
+     * @param commande The command to update
+     * @return The updated command if ok, null otherwise
+     */
+    @Override
+    public Commande updateCommande(Commande commande) {
+        return super.update(commande);
+    }
+
+    /**
+     * Delete a Commande
+     * @param commande The command to delete
+     * @return true if command was deleted, false otherwise
+     */
+    @Override
+    public boolean deleteCommande(Commande commande) {
+        return super.delete(commande);
+    }
+}

@@ -1,0 +1,50 @@
+package com.cours.Core;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+public class CoreView extends JFrame {
+    private final JTextArea textArea;
+ 
+    /**
+     * Construit la vue. 
+     */
+    public CoreView(){
+        super();
+ 
+        setSize(640, 480);
+        setTitle(Core.getInstance().getApplicationName());
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowCloseListener());
+ 
+        textArea = new JTextArea("Texte des modules : \n");
+ 
+        add(new JScrollPane(textArea), BorderLayout.CENTER);
+ 
+        setLocationRelativeTo(null);
+    }
+ 
+    /**
+     * Ajoute un texte dans la vue. 
+     * 
+     * @param message Le message à ajouter. 
+     */
+    public void addText(String message){
+        textArea.append('\t' + message + '\n');
+    }
+ 
+    /**
+     * Le listener pour fermer l'application complète lorsqu'on ferme la fenêtre. 
+     * 
+     * @author Baptiste Wicht
+     */
+    private static class WindowCloseListener extends WindowAdapter {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            Core.getInstance().exit();
+        }
+    }
+}
+

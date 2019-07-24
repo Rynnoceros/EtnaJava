@@ -1,0 +1,57 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.service.impl;
+
+import com.cours.ebenus.dao.IAdresseDao;
+import com.cours.ebenus.dao.IArticleCommandeDao;
+import com.cours.ebenus.dao.ICommandeDao;
+import com.cours.ebenus.dao.IProduitDao;
+import com.cours.ebenus.dao.IRoleDao;
+import com.cours.ebenus.dao.IUtilisateurDao;
+import com.cours.ebenus.service.IServiceFacade;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ * Service facade. Used to get the right dao.
+ * @author soubri_j/martin_m
+ */
+public class ServiceFacade implements IServiceFacade {
+
+    private static final Log log = LogFactory.getLog(ServiceFacade.class);
+    
+    @Override
+    public IUtilisateurDao getUtilisateurDao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IRoleDao getRoleDao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IAdresseDao getAdresseDao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IArticleCommandeDao getArticleCommandeDao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IProduitDao getProduitDao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ICommandeDao getCommandeDao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+
+}

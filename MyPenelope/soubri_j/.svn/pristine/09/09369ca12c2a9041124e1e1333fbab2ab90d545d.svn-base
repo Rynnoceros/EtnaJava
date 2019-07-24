@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.etna.mypenelope.modules.usermanagement.FXMLUserManagementController">
+   <children>
+       <Button layoutX="491.0" layoutY="6.0" onAction="#test" text="Module 1" />
+      <ListView fx:id="lvUserType" prefHeight="400.0" prefWidth="162.0" />
+      <TableView fx:id="tableUtilisateurs" layoutX="161.0" layoutY="47.0" prefHeight="363.0" prefWidth="439.0">
+         <columns>
+            <TableColumn fx:id="idColumn" minWidth="4.0" prefWidth="51.0" text="Id" />
+            <TableColumn fx:id="lastNameColumn" prefWidth="68.0" text="Nom" />
+            <TableColumn fx:id="firstNameColumn" prefWidth="87.0" text="Prenom" />
+            <TableColumn fx:id="mailColumn" prefWidth="93.0" text="Mail" />
+            <TableColumn fx:id="mdpColumn" minWidth="0.0" prefWidth="83.0" text="Mdp" />
+            <TableColumn fx:id="adminColumn" minWidth="8.0" prefWidth="68.0" text="Admin" />
+         </columns>
+      </TableView>
+     <!-- <Button layoutX="162.0" layoutY="-1.0" mnemonicParsing="false" onAction="#newUser" prefHeight="27.0" prefWidth="134.0" text="New User" />
+      <Button layoutX="318.0" layoutY="-1.0" mnemonicParsing="false" onAction="#deleteUser" prefHeight="27.0" prefWidth="140.0" text="Delete User" />
+   
+      <Button layoutX="162.0" layoutY="6.0" mnemonicParsing="false" onAction="" prefHeight="27.0" prefWidth="134.0" text="New User" />
+      <Button layoutX="318.0" layoutY="6.0" mnemonicParsing="false" onAction="" prefHeight="27.0" prefWidth="140.0" text="Delete User" />-->
+  </children> 
+</AnchorPane>

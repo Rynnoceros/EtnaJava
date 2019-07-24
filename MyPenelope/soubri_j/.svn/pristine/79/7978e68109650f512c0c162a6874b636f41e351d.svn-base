@@ -1,0 +1,56 @@
+/**
+ * View Manager class. It manage all components displayed on the screen
+ */
+package com.cours.Core;
+
+import java.awt.Component;
+
+public class ViewManager {
+    private CoreView view;
+    
+	/**
+	 * Singleton implementation with Holder
+	 * @author soubri_j/martin_m
+	 */
+	private static class ViewManagerHolder {
+		private static final ViewManager instance = new ViewManager();		
+	}
+ 
+    /**
+     * Returns a unique instance of ViewManager.
+     * @return The unique instance of ViewManager.
+     */
+    public static ViewManager getInstance() {
+        return ViewManagerHolder.instance;
+    }
+ 
+    /**
+     * Service initialization.
+     */
+    public void init() {
+        view = new CoreView();
+    }
+ 
+    /**
+     * Display the view.
+     */
+    public void display() {
+        view.setVisible(true);
+    }
+ 
+    /**
+     * Close the view.
+     */
+    public void close() {
+        view.dispose();
+    }
+    
+    /**
+     * Method used to add graphical elements to the view
+     * @param title Title of the tab
+     * @param component The component to add to the tab
+     */
+    public void loadGraphicalElement(String title, Component component) {
+    	view.addTabElement(title, component);
+    }
+}

@@ -1,0 +1,90 @@
+package com.cours.Core;
+
+import java.util.List;
+
+public class Core {
+	private static final Core instance = new Core();
+	 
+    private String applicationFolder;
+ 
+    private List<IModule> modules;
+    private String applicationName;
+ 
+    /**
+     * Retourne l'instance unique du core.
+     *
+     * @return L'instance unique du core.
+     */
+    public static Core getInstance() {
+        return instance;
+    }
+ 
+    /**
+     * Lance l'application et démarre tous les modules.
+     */
+    public void launch(){
+        modules = ModuleLoader.loadModules();
+ 
+        LogManager.getInstance().init();
+        ViewManager.getInstance().init();
+ 
+        LogManager.getInstance().log("Chargement des modules");
+ 
+        for(IModule module : modules){
+            module.plug();
+ 
+            LogManager.getInstance().log(module.getName() + " OK. ");
+        }
+ 
+        ViewManager.getInstance().display();
+    }
+ 
+    /**
+     * Ferme l'application et stoppe tous les modules. 
+     */
+    public void exit(){
+        for(IModule module : modules){
+            module.unplug();
+        }
+ 
+        ViewManager.getInstance().close();
+ 
+        LogManager.getInstance().log("Fermeture de l'application");
+    }
+ 
+    /**
+     * Retourne le dossier dans lequel l'application se trouve.
+     *
+     * @return Le dossier de l'application.
+     */
+    public String getApplicationFolder() {
+        return applicationFolder;
+    }
+ 
+    /**
+     * Modifie le dossier dans lequel l'application se trouve.
+     *
+     * @param applicationFolder Le dossier de l'application.
+     */
+    public void setApplicationFolder(String applicationFolder) {
+        this.applicationFolder = applicationFolder;
+    }
+ 
+    /**
+     * Retourne le nom de l'application.
+     *
+     * @return Le nom de l'application.
+     */
+    public String getApplicationName() {
+        return applicationName;
+    }
+ 
+    /**
+     * Modifie le nom de l'application.
+     *
+     * @param applicationName Le nom de l'application.
+     */
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+}

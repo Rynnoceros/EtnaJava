@@ -1,0 +1,53 @@
+package com.cours.Core;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+public class CoreView extends JFrame {
+	private final JTabbedPane panel;
+	private GridLayout gridLayout;
+	
+    /**
+     * Constructs the view. 
+     */
+    public CoreView(){
+        super();
+ 
+        setSize(640, 480);
+        setTitle(Core.getInstance().getApplicationName());
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowCloseListener());
+ 
+        panel = new JTabbedPane();
+        //gridLayout = new GridLayout(0, 1);
+        //panel.setLayout(gridLayout);
+        
+ 
+        add(panel, BorderLayout.CENTER);
+ 
+        setLocationRelativeTo(null);
+    }
+ 
+    /**
+     * Listener to close completely the application when closing window. 
+     * @author soubri_j/martin_m
+     */
+    private static class WindowCloseListener extends WindowAdapter {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            Core.getInstance().exit();
+        }
+    }
+    
+    /**
+     * Method used to add a tab to the JTabbedPane
+     * @param title Title of the tab
+     * @param component Content of the tab
+     */
+    public void addTabElement(String title, Component component) {
+    	panel.addTab(title, component);
+    }
+}
+

@@ -1,0 +1,27 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.ihm.utils;
+
+/**
+ *
+ * @author ElHadji
+ */
+public class Constants {
+
+    public static String APP_PATH = "/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/Ebenus/martin_m/maven-quest-ebenus-java-fx";
+    public static String MSG_ERROR_CANNOT_UPDATE_USER = "Vous devez disposer des droits administrateur pour mettre à jour un utilisateur";
+    public static String MSG_ERROR_CANNOT_DELETE_CONNECTED_USER = "Vous ne pouvez pas supprimer l'utilisateur actuellement connecté";
+    public static String MSG_ERROR_CANNOT_DELETE_USER = "Vous devez disposer des droits administrateur pour supprimer un utilisateur";
+    public static String MSG_ERROR_MANDATORY_FIELDS = "Le prenom, le nom, la date de naissance, l'identifiant et le mot de passe sont obligatoires";
+    public static String MSG_OK_CSV_IMPORTED = "Le fichier CSV a bien été importé";
+    public static String MSG_OK_EXPORTED = "Le fichier a bien été exporté";
+    public static String CSV_SEPARATOR = ";";
+    
+    public enum Civilite {
+    	Mr,
+    	Mme
+    }
+}

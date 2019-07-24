@@ -1,0 +1,171 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.messages;
+
+import com.etna.mypenelope.core.dao.impl.MessageDestinataireSQLDao;
+import com.etna.mypenelope.core.dao.impl.MessageSQLDao;
+import com.etna.mypenelope.core.dao.impl.UtilisateurSQLDao;
+import com.etna.mypenelope.core.entities.Message;
+import com.etna.mypenelope.core.entities.MessageDestinataire;
+import com.etna.mypenelope.core.entities.Utilisateur;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+
+/**
+ * FXML Controller class
+ *
+ * @author soubri_j/martin_m
+ */
+public class FXMLMessageManagementController implements Initializable {
+    Integer loggedUser;
+    Message selectedMessage;
+    List<Message> selectedMessages;
+    MessageSQLDao messageDao = new MessageSQLDao(Message.class, "messages");
+    MessageDestinataireSQLDao messageDestinataireDao = new MessageDestinataireSQLDao(MessageDestinataire.class, "messages_destinataires");
+    UtilisateurSQLDao utilisateurDao = new UtilisateurSQLDao(Utilisateur.class, "utilisateur");
+    
+    @FXML
+    AnchorPane anchorMessage;
+    @FXML
+    ListView lvMessageType;
+    @FXML
+    ListView lvMessages;
+    @FXML
+    ComboBox cbUtilisateurs;
+    @FXML
+    TextArea txtContent;
+    @FXML
+    TextField txtRecipients;
+    @FXML
+    TextField txtObject;
+    
+    List<Message> receivedMessages;
+    List<Message> sentMessages;
+    List<Utilisateur> destinataires;
+    
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        for (MessageType type : MessageType.values()) {
+            this.lvMessageType.getItems().add(type.name());   
+        }
+        lvMessageType.getSelectionModel().selectedItemProperty().addListener(OnSelectMessageTypeChanged());
+        lvMessages.getSelectionModel().selectedItemProperty().addListener(OnSelectMessageChanged());
+        loggedUser = 1;
+        anchorMessage.visibleProperty().setValue(Boolean.FALSE);
+        loadUtilisateurs();
+        initMessages();
+    }
+    
+    public enum MessageType {
+        ReceivedMessages,
+        SentMessages
+    }
+    
+    public ChangeListener<String> OnSelectMessageTypeChanged() {
+        return (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (newValue.equals(MessageType.ReceivedMessages.name())) {
+                loadMessages(receivedMessages);
+            } else if (newValue.equals(MessageType.SentMessages.name())) {
+                loadMessages(sentMessages);
+            }
+        };
+    }
+    
+    public ChangeListener<Message> OnSelectMessageChanged() {
+        return (ObservableValue<? extends Message> observable, Message oldValue, Message newValue) -> {
+            this.selectedMessage = newValue;
+        };
+    }
+    
+    private void loadMessages(List<Message> messages) {
+        this.lvMessages.getItems().setAll(messages);
+        this.selectedMessages = messages;
+    }
+    
+    private void initMessages() {
+        this.receivedMessages = messageDao.findReceivedMessages(loggedUser);
+        this.sentMessages = messageDao.findSentMessages(loggedUser);
+    }
+    
+    public void deleteMessage() {
+        if (selectedMessages != null && this.selectedMessage != null) {
+            if (lvMessageType.getSelectionModel().getSelectedItem().equals(MessageType.ReceivedMessages.toString())) {
+                this.messageDao.deleteReceivedMessage(this.selectedMessage.getIdMessage(), loggedUser);
+            }
+            if (lvMessageType.getSelectionModel().getSelectedItem().equals(MessageType.SentMessages.toString())) {
+                this.messageDao.deleteSentMessage(this.selectedMessage);
+            }
+            this.selectedMessages.remove(this.selectedMessage);
+            this.selectedMessage = null;
+            this.lvMessages.getItems().setAll(this.selectedMessages);
+        }
+    }
+    
+    public void newMessage() {
+        lvMessages.visibleProperty().setValue(Boolean.FALSE);
+        anchorMessage.visibleProperty().setValue(Boolean.TRUE);
+        destinataires = new ArrayList<Utilisateur>();
+        txtRecipients.textProperty().setValue("");
+        txtContent.textProperty().setValue("");
+        txtObject.textProperty().setValue("");
+        
+    }
+    
+    public void cancelMessage() {
+        lvMessages.visibleProperty().setValue(Boolean.TRUE);
+        anchorMessage.visibleProperty().setValue(Boolean.FALSE);
+    }
+    
+    public void loadUtilisateurs() {
+        cbUtilisateurs.getItems().addAll(utilisateurDao.findAll());
+    }
+    
+    public void AddRecipient() {
+        Utilisateur toAdd = null;
+        
+        if (cbUtilisateurs.getSelectionModel().getSelectedItem() != null) {
+            toAdd = (Utilisateur)cbUtilisateurs.getSelectionModel().getSelectedItem();
+            if (!destinataires.contains(toAdd)) {
+                destinataires.add(toAdd);
+                txtRecipients.textProperty().setValue(txtRecipients.getText() + toAdd.getMail() + "; ");
+            }
+        }
+    }
+    
+    public void sendMessage() {
+        if (destinataires != null && destinataires.size() > 0) {
+            Message toSend = new Message(loggedUser, /*null,*/ txtObject.getText(), txtContent.getText());
+            toSend = messageDao.create(toSend);
+            for (Utilisateur user : destinataires) {
+                MessageDestinataire md = new MessageDestinataire();
+                md.setIdMessage(toSend.getIdMessage());
+                md.setIdUtilisateur(user.getIdUtilisateur());
+                messageDestinataireDao.create(md);
+            }
+            this.sentMessages.add(toSend);
+            if (lvMessageType.getSelectionModel().getSelectedItem().equals(MessageType.SentMessages.toString())) {
+                this.lvMessages.getItems().setAll(this.sentMessages);
+            }
+            this.lvMessages.refresh();
+        }
+        lvMessages.visibleProperty().setValue(Boolean.TRUE);
+        anchorMessage.visibleProperty().setValue(Boolean.FALSE);
+    }
+}

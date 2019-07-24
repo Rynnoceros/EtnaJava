@@ -1,0 +1,103 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.core;
+import java.util.List;
+
+/**
+ *
+ * @author soubri_j/martin_m
+ */
+public class Core {
+    private List<IModule> modules;
+    private String applicationName;
+    private String applicationFolder;
+ 
+    /**
+     * Singleton implementation with Holder
+     * @author soubri_j/martin_m
+     */
+    private static class CoreHolder {
+    	private static final Core instance = new Core();
+    }
+    
+    /**
+     * Return a unique instance of the core app.
+     * @return The unique instance of the Core app.
+     */
+    public static Core getInstance() {
+        return CoreHolder.instance;
+    }
+ 
+    /**
+     * Lance l'application et démarre tous les modules.
+     */
+    public void launch(){
+        modules = ModuleLoader.loadModules();
+ 
+        LogManager.getInstance().init();
+        ViewManager.getInstance().init();
+ 
+        LogManager.getInstance().log("Chargement des modules");
+ 
+        LogManager.getInstance().log(modules.size() + " modules chargés");
+        /*for(IModule module : modules){
+            module.plug();
+ 
+            LogManager.getInstance().log(module.getName() + " OK. ");
+        }*/
+    }
+ 
+    /**
+     * Ferme l'application et stoppe tous les modules. 
+     */
+    public void exit(){
+        for(IModule module : modules){
+            module.unplug();
+        }
+ 
+        LogManager.getInstance().log("Fermeture de l'application");
+    }
+ 
+    /**
+     * Retourne le dossier dans lequel l'application se trouve.
+     *
+     * @return Le dossier de l'application.
+     */
+    public String getApplicationFolder() {
+        return applicationFolder;
+    }
+ 
+    /**
+     * Modifie le dossier dans lequel l'application se trouve.
+     *
+     * @param applicationFolder Le dossier de l'application.
+     */
+    public void setApplicationFolder(String applicationFolder) {
+        this.applicationFolder = applicationFolder;
+    }
+ 
+    /**
+     * Retourne le nom de l'application.
+     *
+     * @return Le nom de l'application.
+     */
+    public String getApplicationName() {
+        return applicationName;
+    }
+ 
+    /**
+     * Modifie le nom de l'application.
+     *
+     * @param applicationName Le nom de l'application.
+     */
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+    
+    public List<IModule> getModules() {
+        return modules;
+    }
+}

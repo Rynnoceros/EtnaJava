@@ -1,0 +1,172 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.documents;
+
+import com.etna.mypenelope.core.Constants;
+import com.etna.mypenelope.core.dao.impl.ContactSQLDao;
+import com.etna.mypenelope.core.dao.impl.DocumentSQLDao;
+import com.etna.mypenelope.core.dao.impl.GroupeSQLDao;
+import com.etna.mypenelope.core.dao.impl.ProjectDocumentSQLDao;
+import com.etna.mypenelope.core.dao.impl.ProjectSQLDao;
+import com.etna.mypenelope.core.dao.impl.UtilisateurSQLDao;
+import com.etna.mypenelope.core.entities.Document;
+import com.etna.mypenelope.core.entities.Project;
+import com.etna.mypenelope.core.entities.ProjectDocument;
+import com.etna.mypenelope.core.entities.Groupe;
+import com.etna.mypenelope.core.entities.Utilisateur;
+import com.etna.mypenelope.core.entities.Contact;
+import com.etna.mypenelope.core.interfaces.IPersonne.PersonType;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+
+/**
+ * FXML Controller class
+ *
+ * @author soubri_j/martin_m
+ */
+public class FXMLDocumentManagementController implements Initializable {
+    private final ProjectSQLDao projectDao = new ProjectSQLDao(Project.class, Constants.TABLE_PROJECTS);
+    private final ProjectDocumentSQLDao projectDocumentDao = new ProjectDocumentSQLDao(ProjectDocument.class, Constants.TABLE_PROJECTS_DOCUMENTS);
+    private final DocumentSQLDao documentDao = new DocumentSQLDao(Document.class, Constants.TABLE_DOCUMENTS);
+    private final GroupeSQLDao groupeDao = new GroupeSQLDao(Groupe.class, Constants.TABLE_GROUPES);
+    private final UtilisateurSQLDao utilisateurDao = new UtilisateurSQLDao(Utilisateur.class, Constants.TABLE_UTILISATEUR);
+    private final ContactSQLDao contactDao = new ContactSQLDao(Contact.class, Constants.TABLE_CONTACTS);
+    
+    @FXML
+    ListView lvProjects;
+    
+    @FXML
+    ListView lvDocuments;
+    
+    @FXML
+    ComboBox cbPersonType;
+    
+    @FXML
+    ComboBox cbOwner;
+    
+    @FXML
+    Button btnBrowse;
+    
+    @FXML
+    Button btnAdd;
+    
+    @FXML
+    Button btnEdit;
+    
+    @FXML
+    Button btnRemove;
+    
+    @FXML
+    TextField txtDocument;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        loadProjects();
+        loadPersonType();
+        lvProjects.getSelectionModel().selectedItemProperty().addListener(onProjectSelectedChanged());
+        lvDocuments.getSelectionModel().selectedItemProperty().addListener(onDocumentSelectedChanged());
+        cbPersonType.getSelectionModel().selectedItemProperty().addListener(onPersonTypeSelectedChanged());
+    }    
+    
+    public void addDocument() {
+        txtDocument.setEditable(Boolean.TRUE);
+        btnBrowse.setDisable(Boolean.FALSE);
+    }
+    
+    public void editDocument() {
+        txtDocument.setEditable(Boolean.FALSE);
+        btnBrowse.setDisable(Boolean.TRUE);
+    }
+    
+    public void removeDocument() {
+        txtDocument.setEditable(Boolean.FALSE);
+        btnBrowse.setDisable(Boolean.TRUE);
+        Document toDelete = (Document) lvDocuments.getSelectionModel().getSelectedItem();
+        if (toDelete != null) {
+            documentDao.delete(toDelete);
+            lvDocuments.getItems().remove(toDelete);
+            projectDocumentDao.deleteWhereDocument(toDelete);
+        }
+    }
+    
+    public void browseDocument() {
+        
+    }
+    
+    private void loadProjects() {
+        this.lvProjects.getItems().setAll(projectDao.findAll());
+    }
+    
+    private void loadDocuments(Project project) {
+        List<ProjectDocument> all = projectDocumentDao.findAll();
+        
+        if (project != null) {
+            lvDocuments.getItems().setAll(all.stream()
+                                  .filter(projectDocumentDao.filterByIdProject(project.getIdProject()))
+                                  .collect(Collectors.toList()));
+        }
+    }
+    
+    private void loadPersonType() {
+        for (PersonType pt : PersonType.values()) {
+            this.cbPersonType.getItems().add(pt.toString());
+        }
+    }
+    
+    protected ChangeListener<Project> onProjectSelectedChanged() {
+        return (ObservableValue<? extends Project> observable, Project oldValue, Project newValue) -> {
+            loadDocuments(newValue);
+        };
+    }  
+    
+    protected ChangeListener<Document> onDocumentSelectedChanged() {
+        return (ObservableValue<? extends Document> observable, Document oldValue, Document newValue) -> {
+            updateScreenAuthorization();
+        };
+    }
+    
+    protected ChangeListener<String> onPersonTypeSelectedChanged() {
+        return (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (!newValue.equals(oldValue)) {
+                loadOwner(newValue);
+            }
+        };
+    }
+    
+    private void loadOwner(String personType) {
+        if (personType.equals(PersonType.Contact.toString())) {
+            cbOwner.getItems().setAll(contactDao.findAll());
+        } else if (personType.equals(PersonType.Groupe.toString())) {
+            cbOwner.getItems().setAll(groupeDao.findAll());
+        } else if (personType.equals(PersonType.Utilisateur.toString())) {
+            cbOwner.getItems().setAll(utilisateurDao.findAll());
+        }
+    }
+
+    private void updateScreenAuthorization() {
+        if (lvDocuments.getSelectionModel().getSelectedItem() != null) {
+            txtDocument.setEditable(Boolean.FALSE);
+            btnEdit.setDisable(Boolean.FALSE);
+            btnRemove.setDisable(Boolean.FALSE);
+        } else {
+            btnEdit.setDisable(Boolean.FALSE);
+            btnRemove.setDisable(Boolean.FALSE);
+        }
+    }
+}

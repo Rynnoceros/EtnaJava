@@ -1,0 +1,37 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.etna.mypenelope.modules.usermanagement;
+
+import com.etna.mypenelope.core.IModule;
+import com.etna.mypenelope.core.LogManager;
+import com.etna.mypenelope.core.ViewManager;
+
+/**
+ *
+ * @author rynnoceros
+ */
+public class UserManagement implements IModule {
+    public UserManagement() {
+    }
+    
+    public void plug() {
+        LogManager.getInstance().log("Premier module");
+        ViewManager.getInstance().loadGraphicalElement(this);
+    }
+
+    public void unplug() {
+        LogManager.getInstance().log("Je sors");
+        ViewManager.getInstance().deleteGraphicalElement(this);
+    }
+
+    public String getName() {
+        return "Module numéro 1";
+    }
+
+    public String getFXMLFileName() {
+        return "FXMLUserManagement.fxml";
+    }
+}

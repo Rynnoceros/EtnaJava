@@ -1,0 +1,1 @@
+INDEX VERSION 1.4+/Users/rynnoceros/Documents/Developpement/EtnaFormation/Java/Ebenus/martin_m/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes

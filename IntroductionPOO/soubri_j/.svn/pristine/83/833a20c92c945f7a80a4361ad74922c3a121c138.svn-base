@@ -1,0 +1,93 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.process;
+
+import com.cours.entities.Animal;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ *
+ * @author elhad
+ */
+public class ProcessAnimal implements IProcessAnimal {
+
+    private static final Log log = LogFactory.getLog(ProcessAnimal.class);
+    private List<Animal> animals = null;
+    private final DateFormat dateFormat = null;
+
+    @Override
+    public List<Animal> loadAnimalsManually() {
+        animals = new ArrayList<Animal>();
+        animals.add(new Animal(1, "Lion", 200, new Date("23/12/1988"), "Marron", 4, true));
+        animals.add(new Animal(2, "Elephant", 700, new Date("23/12/1978"), "Noir", 4, true));
+        animals.add(new Animal(3, "Tigre", 150, new Date("23/12/1998"), "Blanc", 4, true));
+        animals.add(new Animal(4, "Requin", 10, new Date("23/12/1978"), "Blanc", 0, true));
+        animals.add(new Animal(5, "Chat", 5, new Date("23/12/2000"), "Noir", 4, true));
+        animals.add(new Animal(6, "Mouton", 25, new Date("23/12/2001"), "Blanc", 4, false));
+        animals.add(new Animal(7, "Chevre", 35, new Date("23/12/2012"), "Noir", 4, false));
+        animals.add(new Animal(8, "Poule", 1, new Date("23/12/2009"), "Marron", 2, false));
+        animals.add(new Animal(9, "Porc", 20, new Date("23/12/2003"), "Blanc", 4, false));
+        animals.add(new Animal(10, "Singe", 25, new Date("23/12/2004"), "Marron", 4, false));
+        animals.add(new Animal(11, "Girafe", 175, new Date("23/12/2013"), "Marron et noir", 4, false));
+        return animals;
+    }
+
+    @Override
+    public List<Animal> loadAnimalsFile() {
+        animals = new ArrayList<Animal>();
+        return animals;
+    }
+
+    @Override
+    public Double calculMoyennePoidsAnimaux() {
+        double total = 0.0;
+
+        return total;
+    }
+
+    @Override
+    public Double calculEcartTypePoidsAnimaux() {
+        return 0.0;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsById() {
+        return null;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsByName() {
+        return null;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsByWeight() {
+        return null;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsByColor() {
+        return null;
+    }
+
+    @Override
+    public void generateFileByName() {
+    }
+
+    @Override
+    public void generateFileByWeight() {
+    }
+
+    @Override
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+}

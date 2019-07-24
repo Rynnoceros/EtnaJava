@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.etna.mypenelope.modules.documents.FXMLDocumentManagementController">
+   <children>
+      <ListView fx:id="lvProjects" layoutY="30.0" prefHeight="370.0" prefWidth="142.0" />
+      <Label layoutY="6.0" text="Projects list" />
+      <Separator layoutX="142.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="4.0" />
+      <Label layoutX="148.0" layoutY="6.0" text="Documents list" />
+      <ListView fx:id="lvDocuments" layoutX="148.0" layoutY="30.0" prefHeight="370.0" prefWidth="142.0" />
+      <Separator layoutX="290.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="6.0" />
+      <Button layoutX="300.0" layoutY="1.0" mnemonicParsing="false" text="Add" 
+              onAction="#addDocument" />
+      <Button layoutX="349.0" layoutY="1.0" mnemonicParsing="false" text="Edit" 
+              onAction="#editDocument"/>
+      <Button layoutX="398.0" layoutY="1.0" mnemonicParsing="false" text="Remove" 
+              onAction="#removeDocument"/>
+      <AnchorPane layoutX="291.0" layoutY="30.0" prefHeight="370.0" prefWidth="309.0">
+         <children>
+            <Label layoutX="9.0" layoutY="6.0" text="Associate document to" />
+            <Separator layoutY="22.0" prefHeight="4.0" prefWidth="309.0" />
+            <ComboBox fx:id="cbPersonType" layoutX="9.0" layoutY="26.0" prefHeight="27.0" prefWidth="141.0" />
+            <ComboBox fx:id="cbOwner" layoutX="155.0" layoutY="26.0" prefHeight="27.0" prefWidth="141.0" />
+            <Label layoutX="9.0" layoutY="65.0" text="Document preview" />
+            <Separator layoutY="80.0" prefHeight="4.0" prefWidth="309.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

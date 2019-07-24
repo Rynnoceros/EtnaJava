@@ -1,0 +1,80 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.process;
+
+import com.cours.entities.Animal;
+import java.text.DateFormat;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ *
+ * @author elhad
+ */
+public class ProcessAnimal implements IProcessAnimal {
+
+    private static final Log log = LogFactory.getLog(ProcessAnimal.class);
+    private List<Animal> animals = null;
+    private final DateFormat dateFormat = null;
+
+    @Override
+    public List<Animal> loadAnimalsManually() {
+        //animals.clear();
+        return animals;
+    }
+
+    @Override
+    public List<Animal> loadAnimalsFile() {
+        //animals.clear();
+        return animals;
+    }
+
+    @Override
+    public Double calculMoyennePoidsAnimaux() {
+        double total = 0.0;
+
+        return total;
+    }
+
+    @Override
+    public Double calculEcartTypePoidsAnimaux() {
+        return 0.0;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsById() {
+        return null;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsByName() {
+        return null;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsByWeight() {
+        return null;
+    }
+
+    @Override
+    public List<Animal> sortAnimalsByColor() {
+        return null;
+    }
+
+    @Override
+    public void generateFileByName() {
+    }
+
+    @Override
+    public void generateFileByWeight() {
+    }
+
+    @Override
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+}

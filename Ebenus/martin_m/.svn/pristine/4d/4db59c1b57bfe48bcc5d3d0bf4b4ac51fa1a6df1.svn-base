@@ -1,0 +1,259 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.ebenus.dao.entities;
+
+import com.cours.ebenus.dao.annotations.FetchChild;
+import com.cours.ebenus.dao.annotations.FieldName;
+import com.cours.ebenus.dao.annotations.PrimaryKey;
+import com.cours.ebenus.dao.annotations.UpdateDate;
+import java.util.Date;
+
+/**
+ * ArticleCommande entity.
+ * @author subri_j/martin_m
+ */
+public class ArticleCommande {
+    @PrimaryKey
+    private Integer idArticleCommande;
+    @FieldName (name = "totalArticleCommand")
+    private Double totalArticleCommande;
+    @FieldName (name = "referenceArticleCommande")
+    private String reference;
+    @FieldName (name = "quantiteArticleCommande")
+    private Double quantite;
+    @FieldName (name = "statutArticleCommande")
+    private String statut;
+    @UpdateDate
+    @FieldName (name = "dateModificationArticleCommande")
+    private Date dateModification;
+    @FieldName (name = "versionArticleCommande")
+    private Integer version;
+    @FetchChild (entity = Commande.class, foreignKey = "idCommande")
+    private Commande commande;
+    @FetchChild (entity = Utilisateur.class, foreignKey = "idUtilisateur")
+    private Utilisateur utilisateur;
+    @FetchChild (entity = Adresse.class, foreignKey = "idAdresse")
+    private Adresse adresse;
+    @FetchChild (entity = Produit.class, foreignKey = "idProduit")
+    private Produit produit;
+
+    /**
+     * idArticleCommande getter.
+     * @return idArticleCommande
+     */
+    public Integer getIdArticleCommande() {
+        return idArticleCommande;
+    }
+
+    /**
+     * totalArticleCommande getter.
+     * @return Double containing the total for this article for the command
+     */
+    public Double getTotalArticleCommande() {
+        return totalArticleCommande;
+    }
+
+    /**
+     * reference getter.
+     * @return String containing reference
+     */
+    public String getReference() {
+        return reference;
+    }
+
+    /**
+     * quantity getter.
+     * @return Double containing the number of article for the command
+     */
+    public Double getQuantite() {
+        return quantite;
+    }
+
+    /**
+     * statut getter.
+     * @return String containing status of the command
+     */
+    public String getStatut() {
+        return statut;
+    }
+
+    /**
+     * dateModification getter.
+     * @return dateModification
+     */
+    public Date getDateModification() {
+        return dateModification;
+    }
+
+    /**
+     * version getter.
+     * @return version
+     */
+    public Integer getVersion() {
+        return version;
+    }
+
+    /**
+     * commande getter.
+     * @return The command associated to ArticleCommand
+     */
+    public Commande getCommande() {
+        return commande;
+    }
+
+    /**
+     * utilisateur getter.
+     * @return The user associated to the command
+     */
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    /**
+     * adresse getter.
+     * @return Delivery address fot this command
+     */
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    /**
+     * produit getter.
+     * @return The product associated to the command
+     */
+    public Produit getProduit() {
+        return produit;
+    }
+
+    /**
+     * totalArticleCommande setter.
+     * @param totalArticleCommande New totalArticleCommande value
+     */
+    public void setTotalArticleCommande(Double totalArticleCommande) {
+        this.totalArticleCommande = totalArticleCommande;
+    }
+
+    /**
+     * reference setter.
+     * @param reference New reference value
+     */
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    /**
+     * quantite setter.
+     * @param quantite New quantite value
+     */
+    public void setQuantite(Double quantite) {
+        this.quantite = quantite;
+    }
+
+    /**
+     * statut setter.
+     * @param statut New statut value
+     */
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
+    /**
+     * dateModification setter.
+     * @param dateModification New dateModification value
+     */
+    public void setDateModification(Date dateModification) {
+        this.dateModification = dateModification;
+    }
+    
+    /**
+     * version setter.
+     * @param version New version value
+     */
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    /**
+     * commande setter.
+     * @param commande New commande value
+     */
+    public void setCommande(Commande commande) {
+        this.commande = commande;
+    }
+
+    /**
+     * utilisateur setter.
+     * @param utilisateur New utilisateur value
+     */
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+    /**
+     * adresse setter.
+     * @param adresse New adresse value
+     */
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
+
+    /**
+     * produit setter.
+     * @param produit New produit value
+     */
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+    
+    /**
+     * toString override.
+     * @return String containing description of ArticleCommande
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Article commande\n");
+        sb.append("Id: ").append(this.idArticleCommande).append("\n");
+        sb.append("Id commande: ").append(this.commande.getIdCommande()).append("\n");
+        sb.append("Reference: ").append(this.reference).append("\n");
+        sb.append("Id produit: ").append(this.produit.getIdProduit()).append("\n");
+        sb.append("Quantite: ").append(this.quantite).append("\n");
+        sb.append("Id utilisateur: ").append(this.utilisateur).append("\n");
+        return sb.toString();
+    }
+    
+    /**
+     * hashCode override.
+     * @return hashCode of the ArticleCommande
+     */
+    @Override
+    public int hashCode() {
+        return this.idArticleCommande.hashCode() + this.quantite.hashCode() +
+               this.totalArticleCommande.hashCode() + this.version.hashCode() +
+               this.adresse.hashCode() + this.commande.hashCode() +
+               this.dateModification.hashCode() + this.produit.hashCode() +
+               this.reference.hashCode() + this.statut.hashCode() +
+               this.utilisateur.hashCode();
+    }
+    
+    /**
+     * equals override. Test equality between 2 ArticleCommande. Equality is based on id
+     * @param obj The ArticleCommande to compare
+     * @return true if are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ArticleCommande)) {
+            return false;
+        }
+        ArticleCommande ac = (ArticleCommande)obj;
+        if ((this.idArticleCommande == null && ac.idArticleCommande != null) ||
+            (this.idArticleCommande != null && !this.idArticleCommande.equals(ac.getIdArticleCommande()))) {
+            return false;
+        }
+        return true;
+    }
+}

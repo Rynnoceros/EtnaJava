@@ -1,0 +1,230 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.cours.dao.impl.csv;
+
+import com.cours.dao.IDao;
+import com.cours.observer.MySubjectObserver;
+import com.cours.utils.Constants;
+import com.cours.utils.CreateObjectUtil;
+import com.cours.utils.StringUtil;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+/**
+ *
+ * @author ElHadji
+ * @param <T>
+ */
+public abstract class AbstractCsvDao<T> implements IDao<T> {
+	private String headers[] = null;
+    private String csvPathFile = null;
+    private MySubjectObserver mySubject = null;
+    private CreateObjectUtil<T> objectGenerator = null;
+    protected int lastId = 0;
+    protected List<T> allInstances = null;
+
+    public AbstractCsvDao(Class<T> myClass, MySubjectObserver mySubject, String csvPathFile) {
+        this.mySubject = mySubject;
+        this.csvPathFile = csvPathFile;
+        this.objectGenerator = new CreateObjectUtil<T>(myClass);
+        findAll();
+    }
+
+    public AbstractCsvDao(Class<T> myClass, String csvPathFile) {
+        this.csvPathFile = csvPathFile;
+        this.objectGenerator = new CreateObjectUtil<T>(myClass);
+        findAll();
+    }
+
+    @Override
+    public List<T> findAll() {
+    	FileReader fr = null;
+    	BufferedReader br = null;
+    	String line[] = null;
+    			
+    	if (this.csvPathFile != null)
+    	{
+    		try {
+				fr = new FileReader(this.csvPathFile);
+				if (fr != null) {
+					br = new BufferedReader(fr);
+					if (br != null) {						
+						headers = StringUtil.getFields(br.readLine(), Constants.CSV_SEPARATOR);
+						if (headers != null) {
+							allInstances = new ArrayList<T>();
+							do {
+								line = StringUtil.getFields(br.readLine(), Constants.CSV_SEPARATOR);
+								if (line != null) {
+									T instance = objectGenerator.getInstanceFromLine(headers, line);
+									if (instance != null) {
+										allInstances.add(instance);
+									}
+								}
+							} while (line != null);
+						}
+					}
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (fr != null) {
+						fr.close();
+					}
+					if (br != null) {
+						br.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}  		
+    	}
+    	
+        return allInstances;
+    }
+
+    /**
+     * Method used to find an element by its id.
+     */
+    @Override
+    public T findById(int id) {
+    	T toReturn = null;
+    	
+    	if (allInstances != null) {
+    		Optional<T> found = allInstances.stream()
+    										.filter(objectGenerator.filterId(id))
+    										.findFirst();
+    		if (found != null && found.isPresent()) {
+    			toReturn = found.get();
+    		}
+    	}
+    	
+        return toReturn;
+    }
+    
+    /**
+     * Method used to find an element based on a criteria.
+     */
+    @Override
+    public List<T> findByCriteria(String criteria, Object valueCriteria) {
+    	List<T> filteredList = null;
+    	
+    	if (allInstances != null) {
+    		filteredList = allInstances.stream()
+    									.filter(objectGenerator.filterByCriteria(criteria, valueCriteria))
+    									.collect(Collectors.toList());
+    	}
+    	
+        return filteredList;
+    }
+
+    /**
+     * Method used to create an element
+     */
+    @Override
+    public T create(T t) {
+    	T toReturn = null;
+    	FileWriter fw = null;
+    	BufferedWriter bw = null;
+    	
+    	try {    		
+    		if (t != null) {
+				fw = new FileWriter(csvPathFile, true);
+				if (fw != null) {
+					bw = new BufferedWriter(fw);
+					if (bw != null) {
+						bw.write(t.toString());
+						bw.newLine();
+						toReturn = t;
+					}
+				}
+			}
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	} finally {
+    		try {
+    			if (bw != null) {
+    				bw.close();
+    			}
+    			if (fw != null) {
+    				fw.close();
+    			}
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
+    	}
+        return toReturn;
+    }
+
+    /**
+     * Method used to delete an element
+     */
+    @Override
+    public boolean delete(T t) {
+    	boolean toReturn = false;
+    	FileWriter fw = null;
+    	BufferedWriter bw = null;
+    	Field field = null;
+    	
+    	if (t != null) {
+    		try {
+	    		field = objectGenerator.getTheClass().getDeclaredField(Constants.ID);
+	    		if (field != null) {
+	    			field.setAccessible(true);
+	    			toReturn = allInstances.removeIf(objectGenerator.filterId((Integer)field.get(t)));
+	    			if (toReturn) {
+						fw = new FileWriter(csvPathFile);
+						if (fw != null) {
+							bw = new BufferedWriter(fw);
+							if (bw != null) {
+								for (int i = 0; i < headers.length - 1; ++i) {
+									bw.write(String.format("%s;", headers[i]));
+								}
+								bw.write(headers[headers.length - 1]);
+								bw.newLine();
+								for (T element : allInstances) {
+									bw.write(element.toString());
+									bw.newLine();
+								}
+								toReturn = true;
+							}
+						}    				
+	    			}
+	    		}
+    		} catch (Exception ex) {
+    			toReturn = false;
+    			ex.printStackTrace();
+    		} finally {
+    			try {
+    				if (bw != null) {
+    					bw.close();
+    				}
+    				if (fw != null) {
+    					fw.close();
+    				}
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    		}
+    	}
+        return toReturn;
+    }
+}
