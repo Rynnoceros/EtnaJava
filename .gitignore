@@ -3,3 +3,5 @@
 **/.metadata/**
 **/lib/**
 **/target/**
+**/*.class
+**/*.jar
